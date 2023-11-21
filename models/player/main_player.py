@@ -3,11 +3,15 @@ from models.surface_manager import SurfaceManager as sfm
 from models.constantes import ANCHO_VENT
 
 class Jugador:
-    def __init__(self, coord_x, coord_y, frame_rate = 100, speed_walk = 6, speed_run = 12, gravity = 16, jump = 32) -> None:
+    def __init__(self, coord_x, coord_y, frame_rate = 100, speed_walk = 6, speed_run = 12, gravity = 16, jump = 32, max_jumps = 1) -> None:
         self.__iddle_r = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1)
         self.__iddle_l = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1, flip=True)
         self.__walk_r = sfm.get_surface_from_spritesheet("./assets/img/player/walk/leonwalk.png", 8, 1)
         self.__walk_l = sfm.get_surface_from_spritesheet("./assets/img/player/walk/leonwalk.png", 8, 1, flip=True)
+        self.__run_r = sfm.get_surface_from_spritesheet("./assets/img/player/run/leonrun.png", 8, 1)
+        self.__run_l = sfm.get_surface_from_spritesheet("./assets/img/player/run/leonrun.png", 8, 1, flip=True)
+        self.__jump_r = sfm.get_surface_from_spritesheet("./assets/img/player/jump/leonjump.png", 4, 1)
+        self.__jump_l = sfm.get_surface_from_spritesheet("./assets/img/player/jump/leonjump.png", 4, 1, flip=True)
         self.__move_x = coord_x
         self.__move_y = coord_y
         self.__speed_walk = speed_walk
@@ -17,6 +21,8 @@ class Jugador:
         self.__player_animation_time = 0
         self.__gravity = gravity
         self.__jump = jump
+        self.__max_jumps = max_jumps
+        self.__remaining_jumps = self.__max_jumps
         self.__is_jumping = False
         self.__initial_frame = 0
         self.__actual_animation = self.__iddle_r
@@ -52,6 +58,24 @@ class Jugador:
             self.__move_x = 0
             self.__move_y = 0
 
+    def run(self, direction: str = 'Right'):
+            #self.__initial_frame = 0
+            match direction:
+                case 'Right':
+                    look_right = True
+                    self.__set_x_animations_preset(self.__speed_run, self.__run_r, look_r=look_right)
+                case 'Left':
+                    look_right = False
+                    self.__set_x_animations_preset(-self.__speed_run, self.__run_l, look_r=look_right)
+
+    def jump(self, jumping=True):
+        if jumping and self.__remaining_jumps > 0:
+            self.__set_y_animations_preset()
+            self.__remaining_jumps -= 1
+        else:
+            self.__is_jumping = False
+            self.stay()
+
     def __set_x_borders_limit(self):
         pixels_move = 0
         if self.__move_x > 0:
@@ -61,26 +85,42 @@ class Jugador:
 
         return pixels_move
     
-    def do_animation(self, delta_ms):
-        self.__player_animation_time += delta_ms
-        if self.__player_animation_time >= self.__frame_rate:
-            self.__player_animation_time = 0
-            if self.__initial_frame < len(self.__actual_animation) - 1:
-                self.__initial_frame += 1
-            else:
-                self.__initial_frame = 0
-
     def do_movement(self, delta_ms):
         self.__player_move_time += delta_ms
         if self.__player_move_time >= self.__frame_rate:
             self.__player_move_time = 0
             self.__rect.x += self.__set_x_borders_limit()
             self .__rect.y += self.__move_y
-            #PARTE  DE SALTO ABAJO
+            if self.__rect.y < 300:
+                self.__rect.y += self.__gravity
+            
+    
+    
+    def do_animation(self, delta_ms):
+        self.__player_animation_time += delta_ms
+        if self.__player_animation_time >= self.__frame_rate:
+            self.__player_animation_time = 0
+            if not self.__is_jumping:
+                if self.__initial_frame < len(self.__actual_animation) - 1:
+                    self.__initial_frame += 1
+                else:
+                    self.__initial_frame = 0
+            else:
+                self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
+                if self.__initial_frame < len(self.__actual_animation) - 1:
+                    self.__initial_frame += 1
+                else:
+                    self.__initial_frame = 0
+                    self.__is_jumping = False
+                    self.__move_y = 0
+
 
     def update(self, delta_ms):
         self.do_movement(delta_ms)
         self.do_animation(delta_ms)
+
+        if self.__rect.y >= 300: # Si toca el '''suelo'''
+            self.__remaining_jumps = self.__max_jumps
 
     def draw_player(self, screen: pg.surface.Surface):
         self.__actual_img_animation = self.__actual_animation[self.__initial_frame]

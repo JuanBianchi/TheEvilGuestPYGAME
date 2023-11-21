@@ -2,7 +2,7 @@ import pygame
 
 class SurfaceManager:
     @staticmethod
-    def get_surface_from_spritesheet(img_path: str, cols: int, rows: int, step= 1, flip: bool = True) -> list[pygame.surface.Surface]:
+    def get_surface_from_spritesheet(img_path: str, cols: int, rows: int, step= 1, flip: bool = False) -> list[pygame.surface.Surface]:
         sprite_list = []
         img_surface = pygame.image.load(img_path)
         frame_widht = int(img_surface.get_width()/cols)
