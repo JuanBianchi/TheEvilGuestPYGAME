@@ -19,7 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         self.__rect = self.__actual_img_animation.get_rect()
         self.max_x_constraint = constraint_x
 
-
+    
     def constraint(self):  # Ajusta al jugador a los limites de la pantalla
         if self.__enemy_is_looking_right:
             if self.__rect.right < self.max_x_constraint:
@@ -48,10 +48,7 @@ class Enemy(pygame.sprite.Sprite):
 
             if self.__initial_frame < len(self.__actual_animation) - 1:
                 self.__initial_frame += 1
-                print(self.__initial_frame)
-                
             else:
-                #self.__initial_frame = 0
                 self.__actual_animation = self.__walk_r if self.__enemy_is_looking_right else self.__walk_l
                 if self.__initial_frame < len(self.__actual_animation) - 1:
                     self.__initial_frame += 1

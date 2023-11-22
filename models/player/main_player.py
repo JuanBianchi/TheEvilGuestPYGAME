@@ -1,5 +1,6 @@
 import pygame as pg
 from models.surface_manager import SurfaceManager as sfm
+from models.bullet.bullet import Bullet
 from models.constantes import ANCHO_VENT
 
 class Jugador:
@@ -12,6 +13,8 @@ class Jugador:
         self.__run_l = sfm.get_surface_from_spritesheet("./assets/img/player/run/leonrun.png", 8, 1, flip=True)
         self.__jump_r = sfm.get_surface_from_spritesheet("./assets/img/player/jump/leonjump.png", 4, 1)
         self.__jump_l = sfm.get_surface_from_spritesheet("./assets/img/player/jump/leonjump.png", 4, 1, flip=True)
+        self.__shoot_r = sfm.get_surface_from_spritesheet("./assets/img/player/shoot/leonshoot.png", 2, 1)
+        self.__shoot_l = sfm.get_surface_from_spritesheet("./assets/img/player/shoot/leonshoot.png", 2, 1, flip=True)
         self.__move_x = coord_x
         self.__move_y = coord_y
         self.__speed_walk = speed_walk
@@ -24,11 +27,18 @@ class Jugador:
         self.__max_jumps = max_jumps
         self.__remaining_jumps = self.__max_jumps
         self.__is_jumping = False
+        self.__is_still = True
         self.__initial_frame = 0
         self.__actual_animation = self.__iddle_r
         self.__actual_img_animation = self.__actual_animation[self.__initial_frame]
         self.__rect = self.__actual_img_animation.get_rect()
         self.__is_looking_right = True
+
+
+    @property
+    def is_looking_right(self):
+        return self.__is_looking_right
+
 
     def __set_x_animations_preset(self, move_x, animation_list: list[pg.surface.Surface], look_r: bool):
         self.__move_x = move_x
@@ -37,7 +47,6 @@ class Jugador:
 
     def __set_y_animations_preset(self):
         self.__move_y = -self.__jump
-        self.__move_x = self.__speed_run if self.__is_looking_right else -self.__speed_run
         self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
         self.__initial_frame = 0
         self.__is_jumping = True
@@ -76,6 +85,21 @@ class Jugador:
             self.__is_jumping = False
             self.stay()
 
+    # HACER COOLDOWN DE DISPARO
+    def shoot(self, direction: str = 'Right'):
+        if self.__is_still:
+            match direction:
+                case 'Right':
+                    look_right = True
+                    self.__set_x_animations_preset(0, self.__shoot_r, look_r=look_right)
+                    bullet = Bullet(50, direction)
+                case 'Left':
+                    look_right = False
+                    self.__set_x_animations_preset(0, self.__shoot_l, look_r=look_right)
+                    bullet = Bullet(50, direction)
+        
+        return bullet
+
     def __set_x_borders_limit(self):
         pixels_move = 0
         if self.__move_x > 0:
@@ -91,6 +115,7 @@ class Jugador:
             self.__player_move_time = 0
             self.__rect.x += self.__set_x_borders_limit()
             self .__rect.y += self.__move_y
+            # CAMBIAR ESTO. EMPEZAR EN EL SUELO YA Y QUE SIGA FUNCIONANDO LA GRAVEDAD
             if self.__rect.y < 300:
                 self.__rect.y += self.__gravity
             

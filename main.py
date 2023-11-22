@@ -29,6 +29,7 @@ while running:
                 running = False
                 break
 
+    # Esto hacerlo en un metodo de la clase Player que asigne las teclas.
     key_pressed_list = pygame.key.get_pressed()
     if key_pressed_list[pygame.K_d] and not key_pressed_list[pygame.K_a]:
         player.walk('Right')
@@ -40,6 +41,11 @@ while running:
         player.run('Right')
     if key_pressed_list[pygame.K_a] and key_pressed_list[pygame.K_LSHIFT] and not key_pressed_list[pygame.K_d]:
         player.run('Left')
+    if key_pressed_list[pygame.K_f] and player.is_looking_right:
+        player.shoot('Right')
+    if key_pressed_list[pygame.K_f] and not player.is_looking_right:
+        player.shoot('Left')
+    #
 
     screen.fill(bg_color)
     
