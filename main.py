@@ -19,7 +19,7 @@ while running:
     for event in events_list:
         match event.type:
             case pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE: #and player.__is_running
                     player.jump(True)
             case pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
@@ -53,6 +53,8 @@ while running:
     player.update(delta_ms)
     player.draw_player(screen)
     zombie.update(delta_ms, screen)
+    for bullet in player.get_bullets:
+        bullet.update(screen)
     pygame.display.update()
 
 pygame.quit()

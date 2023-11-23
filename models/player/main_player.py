@@ -33,6 +33,7 @@ class Jugador:
         self.__actual_img_animation = self.__actual_animation[self.__initial_frame]
         self.__rect = self.__actual_img_animation.get_rect()
         self.__is_looking_right = True
+        self.__bullet_group = pg.sprite.Group()
 
 
     @property
@@ -85,20 +86,30 @@ class Jugador:
             self.__is_jumping = False
             self.stay()
 
-    # HACER COOLDOWN DE DISPARO
+    #HACER COOLDOWN DE DISPARO
     def shoot(self, direction: str = 'Right'):
         if self.__is_still:
             match direction:
                 case 'Right':
                     look_right = True
                     self.__set_x_animations_preset(0, self.__shoot_r, look_r=look_right)
-                    bullet = Bullet(50, direction)
+                    self.__bullet_group.add(self.create_bullet())
                 case 'Left':
                     look_right = False
                     self.__set_x_animations_preset(0, self.__shoot_l, look_r=look_right)
-                    bullet = Bullet(50, direction)
-        
-        return bullet
+                    self.__bullet_group.add(self.create_bullet())
+
+
+    @property
+    def get_bullets(self) -> list[Bullet]:
+        return self.__bullet_group
+
+    def shot_bullet(self):
+        print("pum")
+        self.__bullet_group.add(self.create_bullet())
+
+    def create_bullet(self):
+        return Bullet(self.__rect.centerx, self.__rect.centery - 10, 50, "Right" if self.__is_looking_right else "Left")
 
     def __set_x_borders_limit(self):
         pixels_move = 0
