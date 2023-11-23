@@ -1,10 +1,10 @@
 import pygame as pg
 from models.surface_manager import SurfaceManager as sfm
 from models.bullet.bullet import Bullet
-from models.constantes import ANCHO_VENT
+from models.constantes import ANCHO_VENT, SHOT_COOLDOWN
 
 class Jugador:
-    def __init__(self, coord_x, coord_y, frame_rate = 100, speed_walk = 6, speed_run = 12, gravity = 16, jump = 32, max_jumps = 1) -> None:
+    def __init__(self, coord_x, coord_y, frame_rate, speed_walk = 6, speed_run = 12, gravity = 16, jump = 32, max_jumps = 1) -> None:
         self.__iddle_r = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1)
         self.__iddle_l = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1, flip=True)
         self.__walk_r = sfm.get_surface_from_spritesheet("./assets/img/player/walk/leonwalk.png", 8, 1)
@@ -33,7 +33,12 @@ class Jugador:
         self.__actual_img_animation = self.__actual_animation[self.__initial_frame]
         self.__rect = self.__actual_img_animation.get_rect()
         self.__is_looking_right = True
+        #Disparos
         self.__bullet_group = pg.sprite.Group()
+        self.__is_ready = True
+        self.__bullet_current_time = 0
+        self.__bullet_cooldown = SHOT_COOLDOWN
+        # self.__puntaje
 
 
     @property
@@ -100,6 +105,43 @@ class Jugador:
                     self.__bullet_group.add(self.create_bullet())
 
 
+    def get_inputs(self):
+        events_list = pg.event.get()
+        for event in events_list:
+            match event.type:
+                case pg.KEYDOWN:
+                    if event.key == pg.K_SPACE: #and player.__is_running
+                        self.jump(True)
+                case pg.KEYUP:
+                    if event.key == pg.K_SPACE:
+                        self.jump(False)
+                case pg.QUIT:
+                    print("CERRANDO EL JUEGO")
+                    running = False
+                    break
+
+        # Esto hacerlo en un metodo de la clase Player que asigne las teclas.
+        key_pressed_list = pg.key.get_pressed()
+        if key_pressed_list[pg.K_d] and not key_pressed_list[pg.K_a]:
+            self.walk('Right')
+        if key_pressed_list[pg.K_a] and not key_pressed_list[pg.K_d]:
+            self.walk('Left')
+        if not key_pressed_list[pg.K_a] and not key_pressed_list[pg.K_d]:
+            self.stay()
+        if key_pressed_list[pg.K_d] and key_pressed_list[pg.K_LSHIFT] and not key_pressed_list[pg.K_a]:
+            self.run('Right')
+        if key_pressed_list[pg.K_a] and key_pressed_list[pg.K_LSHIFT] and not key_pressed_list[pg.K_d]:
+            self.run('Left')
+        if key_pressed_list[pg.K_f] and self.is_looking_right and self.__is_ready:
+            self.shoot('Right')
+            self.__is_ready = False
+            self.__bullet_current_time = pg.time.get_ticks()
+        if key_pressed_list[pg.K_f] and not self.is_looking_right and self.__is_ready:
+            self.shoot('Left')
+            self.__is_ready = False
+            self.__bullet_current_time = pg.time.get_ticks()
+
+
     @property
     def get_bullets(self) -> list[Bullet]:
         return self.__bullet_group
@@ -110,6 +152,14 @@ class Jugador:
 
     def create_bullet(self):
         return Bullet(self.__rect.centerx, self.__rect.centery - 10, 50, "Right" if self.__is_looking_right else "Left")
+
+    
+    def shot_cooldown(self):
+        if not self.__is_ready:
+            current_time = pg.time.get_ticks()
+            if current_time - self.__bullet_current_time >= self.__bullet_cooldown:
+                self.__is_ready = True
+
 
     def __set_x_borders_limit(self):
         pixels_move = 0
@@ -152,8 +202,10 @@ class Jugador:
 
 
     def update(self, delta_ms):
+        self.get_inputs()
         self.do_movement(delta_ms)
         self.do_animation(delta_ms)
+        self.shot_cooldown()
 
         if self.__rect.y >= 300: # Si toca el '''suelo'''
             self.__remaining_jumps = self.__max_jumps

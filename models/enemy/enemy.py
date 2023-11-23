@@ -1,12 +1,13 @@
 import pygame
 from models.surface_manager import SurfaceManager as sfm
+from models.constantes import ALTO_VENT, ANCHO_VENT
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, initial_position: tuple, frame_rate, walk_speed, run_speed, gravity, constraint_x) -> None:
+    def __init__(self, coord_x, coord_y: tuple, frame_rate, walk_speed, run_speed, gravity, constraint_x) -> None:
         super().__init__()
-        self.__walk_r = sfm.get_surface_from_spritesheet("./assets/img/enemies/walk/0.png", 8, 1)
-        self.__walk_l = sfm.get_surface_from_spritesheet("./assets/img/enemies/walk/0.png", 8, 1, flip=True)
-        self.__spawn = initial_position
+        self.__walk_r = sfm.get_surface_from_spritesheet("./assets/img/enemies/walk/1.png", 8, 1)
+        self.__walk_l = sfm.get_surface_from_spritesheet("./assets/img/enemies/walk/1.png", 8, 1, flip=True)
+        #self.__spawn = initial_position
         self.__run = run_speed
         self.__gravity = gravity
         self.__frame_rate = frame_rate
@@ -16,7 +17,10 @@ class Enemy(pygame.sprite.Sprite):
         self.__initial_frame = 0
         self.__actual_animation = self.__walk_r
         self.__actual_img_animation = self.__actual_animation[self.__initial_frame]
+        #self.__actual_img_animation = pygame.transform.scale(self.__actual_img_animation, (10, 10))
         self.__rect = self.__actual_img_animation.get_rect()
+        self.__rect.x = coord_x
+        self.__rect.y = coord_y
         self.max_x_constraint = constraint_x
 
     
@@ -54,8 +58,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.__initial_frame += 1
                 else:
                     self.__initial_frame = 0
-        else:
-            print("The frame rate is lower than the animation time.")
+        
 
 
     def update(self, delta_ms, screen: pygame.surface.Surface):

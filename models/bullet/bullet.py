@@ -22,7 +22,7 @@ class Bullet(pygame.sprite.Sprite):
         match self.__direction:
             case 'Left':
                 self.__bullet_rect.x -= self.__speed
-                if self.__bullet_rect.x >= 600:
+                if self.__bullet_rect.x >= 800:
                     self.kill()
             case 'Right':
                 self.__bullet_rect.x += self.__speed
