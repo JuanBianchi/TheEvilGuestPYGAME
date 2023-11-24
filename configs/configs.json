@@ -1,0 +1,86 @@
+{
+    "stage_1": {
+        "enemy": {
+            "walk_speed": 0,
+            "run_speed": 0,
+            "walk_img_path": "./assets/img/enemies/walk/1.png",
+            "life": 500,
+            "kill_points": 100
+        },
+        "player": {
+            "walk_img_path": "./assets/img/player/walk/leonwalk.png",
+            "run_img_path": "./assets/img/player/run/leonrun.png",
+            "jump_img_path": "./assets/img/player/jump/leonjump.png",
+            "iddle_img_path": "./assets/img/player/iddle/leoniddle.png",
+            "shoot_img_path": "./assets/img/player/shoot/leonshoot.png",
+            "death_img_path": "./",
+            "jump": 35,
+            "max_jumps": 1,
+            "gravity": 12,
+            "walk_speed": 6,
+            "run_speed": 12,
+            "frame_rate": 10, 
+            "shoot_cooldown": 700,
+            "lives": 3,
+            "coords": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 400
+                }
+            ]
+        },
+        "bullet": {
+            "speed": 0,
+            "damage": 0,
+            "coord_x": 0,
+            "coord_y": 0
+        },
+        "platform": {
+            "platform_img_path": "./assets/img/platform/wooden_platform.png",
+            "width": 200,
+            "height": 20
+        },
+        "stage": {
+            "stage_background": "./",
+            "max_amount_enemies": 4,
+            "coords_enemies": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 310
+                },
+                {
+                    "coord_x": 0,
+                    "coord_y": 310
+                },
+                {
+                    "coord_x": 0,
+                    "coord_y": 310
+                },
+                {
+                    "coord_x": 0,
+                    "coord_y": 310
+                }
+            ],
+            "max_amount_platforms": 4,
+            "coords_platforms": [
+                {
+                    "coord_x": 530,
+                    "coord_y": 150
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 150
+                },
+                {
+                    "coord_x": 530,
+                    "coord_y": 350
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 350
+                }
+            ],
+            "lifes": 0
+        }
+    }
+}

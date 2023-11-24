@@ -6,9 +6,13 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__()
         self.__bullet_img = self.load_img(direction)
         self.__speed = speed
-        self.__bullet_rect = self.__bullet_img.get_rect(center=(pos_x, pos_y))
+        self.rect = self.__bullet_img.get_rect(center=(pos_x, pos_y))
+        #self.bullet_rect = self.__bullet_img.get_rect(center=(pos_x, pos_y))
         self.__direction = direction
 
+    @property
+    def get_bullet_rect(self):
+        return self.bullet_rect
 
     def load_img(self, direction):
         if direction == "Right":
@@ -21,16 +25,16 @@ class Bullet(pygame.sprite.Sprite):
     def update(self, screen: pygame.surface.Surface):
         match self.__direction:
             case 'Left':
-                self.__bullet_rect.x -= self.__speed
-                if self.__bullet_rect.x >= 800:
+                self.rect.x -= self.__speed
+                if self.rect.x >= 800:
                     self.kill()
             case 'Right':
-                self.__bullet_rect.x += self.__speed
-                if self.__bullet_rect.x <= 0:
+                self.rect.x += self.__speed
+                if self.rect.x <= 0:
                     self.kill()
         
         self.draw(screen)
 
     def draw(self, screen: pygame.surface.Surface):
-        screen.blit(self.__bullet_img, self.__bullet_rect)    
+        screen.blit(self.__bullet_img, self.rect)    
     

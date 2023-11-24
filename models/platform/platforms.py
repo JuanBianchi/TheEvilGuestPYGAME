@@ -1,0 +1,30 @@
+import pygame
+from constantes import DEBUG
+
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, plat_img_path, coord_x, coord_y, width, height) -> None:
+        super().__init__()
+        self.__platform_image = pygame.image.load(plat_img_path)
+        self.__platform_image = pygame.transform.scale(self.__platform_image, (width, height))
+        self.rect = self.__platform_image.get_rect()
+        self.rect.x = coord_x
+        self.rect.y = coord_y
+        self.__platform_area = pygame.Rect(self.rect.x, self.rect.y, width, height)
+        self.__platform_group = pygame.sprite.Group()
+
+    @property
+    def get_platform_area(self):
+        return self.__platform_area
+
+    @property
+    def get_platform_group(self):
+        return self.__platform_group
+
+
+    def update(self, screen: pygame.surface.Surface):
+        self.draw_platform(screen)
+    
+
+    def draw_platform(self, screen: pygame.surface.Surface):
+        pygame.draw.rect(screen, (0, 0, 255), self.__platform_area)
+        screen.blit(self.__platform_image, self.__platform_area)

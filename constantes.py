@@ -1,0 +1,9 @@
+ANCHO_VENT = 800
+ALTO_VENT = 600
+FPS = 13
+PLAYER_FPS = 10
+AZUL = (0,255,0)
+SHOT_COOLDOWN = 700
+DEBUG = True
+
+JSON_CONFIG_PATH = "./configs/configs.json"
