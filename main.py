@@ -27,10 +27,20 @@ while True:
     delta_ms = clock.tick(FPS)
 
     stage.player.update(delta_ms)
-    stage.platform()
+    for enemy in stage.get_enemies:
+        enemy.update(delta_ms, screen)
+        if pygame.sprite.spritecollide(enemy, stage.player.get_bullets, True) and enemy.is_alive:
+            print("Le pegaste")
+            enemy.is_alive = False
+        if pygame.sprite.collide_rect(stage.player, enemy):
+            print("Me esta pegando")
+            # EN REALIDAD TIENE QUE RESTARSELE UNA VIDA AL JUGADOR
+    stage.spawn_platform()
     stage.player.check_platform_collision(stage.get_platforms)
     stage.player.draw_player(screen)
     stage.player.get_bullets.update(screen)
+    
+
 
     pygame.display.update()
 

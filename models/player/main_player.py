@@ -44,7 +44,7 @@ class Jugador(pg.sprite.Sprite):
         #Colisiones
         self.__is_on_platform = True
         # self.__puntaje
-
+    
 
     @property
     def is_looking_right(self):
@@ -197,7 +197,7 @@ class Jugador(pg.sprite.Sprite):
             self.__player_move_time = 0
             self.rect.x += self.__set_x_borders_limit()
             #self.rect.y += self.__gravity
-            if self.rect.y < 400:
+            if self.rect.y < 450:
                 self.rect.y += self.__gravity
             
             if self.__is_jumping:
@@ -227,12 +227,20 @@ class Jugador(pg.sprite.Sprite):
     def check_platform_collision(self, platforms):
         for platform in platforms:
             if self.rect.colliderect(platform.get_platform_area):
-                # Aquí puedes manejar las acciones que ocurren cuando hay colisión
-                # Por ejemplo, detener el salto, ajustar la posición del jugador, etc.
-                self.rect.y = platform.get_platform_area.top - self.rect.height
-                self.__remaining_jumps = self.__max_jumps  # Reiniciar los saltos
-                self.__is_jumping = False
-            # SEGUIR. SI COLISIONA CON EL BOTTOM DE LA PLATAFORMA, QUE NO SUBA. LO MISMO CON EL LEFT Y EL RIGHT DE LA PLATAFORMA 
+                if self.rect.y < platform.get_platform_area.y:
+                    self.rect.y = platform.get_platform_area.top - self.rect.height
+                    self.__remaining_jumps = self.__max_jumps  # Reiniciar los saltos
+                    self.__is_jumping = False
+                elif self.rect.top >= platform.get_platform_area.y:
+                    self.rect.y = platform.get_platform_area.bottom
+                    self.__is_jumping = False
+                
+                if self.rect.x < platform.get_platform_area.left:
+                    # El jugador está colisionando desde la izquierda
+                    self.rect.right = platform.get_platform_area.left
+                elif self.rect.x > platform.get_platform_area.right:
+                    # El jugador está colisionando desde la derecha
+                    self.rect.left = platform.get_platform_area.right
 
 
     def update(self, delta_ms):
@@ -241,7 +249,7 @@ class Jugador(pg.sprite.Sprite):
         self.do_animation(delta_ms)
         self.shot_cooldown()
 
-        if self.rect.y >= 400: # Si toca el '''suelo'''
+        if self.rect.y >= 450: # Si toca el '''suelo'''
             self.__remaining_jumps = self.__max_jumps
 
     def draw_player(self, screen: pg.surface.Surface):

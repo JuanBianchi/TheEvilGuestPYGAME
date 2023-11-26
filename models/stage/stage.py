@@ -27,10 +27,16 @@ class Stage():
         self.__platforms_list = list()
         self.create_platforms()
 
+        self.__enemies = list()
+        self.create_enemies()
+
     @property
     def get_platforms(self):
         return self.__platforms_list
 
+    @property
+    def get_enemies(self):
+        return self.__enemies
 
     def create_platforms(self):
         for i in range(self.__stage_configs.get('max_amount_platforms')):
@@ -40,31 +46,19 @@ class Stage():
                                              200,
                                              20))
             
-    def platform(self):
+    def spawn_platform(self):
         for platform in self.__platforms_list:
             platform.update(self.__screen)
 
-    
-    # def player_platform_collision_x(self):
-    #     #player_sprites = self.player.get_player_group.sprites()
+    def create_enemies(self):
+        for i in range(self.__stage_configs.get('max_amount_enemies')):
+            self.__enemies.append(Enemy(self.__stage_configs.get('coords_enemies')[i]['coord_x'],
+                                    self.__stage_configs.get('coords_enemies')[i]['coord_y'],
+                                    self.__enemy_configs.get('frame_rate'),
+                                    self.__enemy_configs.get('walk_speed'),
+                                    self.__enemy_configs.get('run_speed'),
+                                    self.__enemy_configs.get('gravity'),
+                                    self.__platforms_list[i].get_platform_right_border.right,
+                                    self.__platforms_list[i].get_platform_left_border.left))
 
-    #     for platform in self.__platforms_list:
-    #         for sprite in platform.get_platform_group.sprites():
-    #             if sprite.rect.colliderect(self.player.rect):
-    #                 if self.player.rect.x < 0:
-    #                     self.player.rect.left = sprite.rect.right
-    #                 elif self.player.rect.x > 0:
-    #                     self.player.rect.right = sprite.rect.left
-
-
-    # def player_platform_collision_y(self):
-    #     #player_sprites = self.player.get_player_group.sprites()
-
-    #     for platform in self.__platforms_list:
-    #         for sprite in platform.get_platform_group.sprites():
-    #             if sprite.rect.colliderect(self.player.rect):
-    #                 if self.player.rect.y < 0:
-    #                     self.player.rect.bottom = sprite.rect.top
-    #                 elif self.player.rect.y > 0:
-    #                     self.player.rect.top = sprite.rect.bottom                
-
+            

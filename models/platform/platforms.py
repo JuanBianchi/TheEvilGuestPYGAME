@@ -10,11 +10,21 @@ class Platform(pygame.sprite.Sprite):
         self.rect.x = coord_x
         self.rect.y = coord_y
         self.__platform_area = pygame.Rect(self.rect.x, self.rect.y, width, height)
+        self.__platform_left_border = pygame.Rect(self.rect.left, self.rect.y, 2, height)
+        self.__platform_right_border = pygame.Rect(self.rect.right, self.rect.y, 2, height)
         self.__platform_group = pygame.sprite.Group()
 
     @property
     def get_platform_area(self):
         return self.__platform_area
+    
+    @property
+    def get_platform_left_border(self):
+        return self.__platform_left_border
+    
+    @property
+    def get_platform_right_border(self):
+        return self.__platform_right_border
 
     @property
     def get_platform_group(self):
@@ -26,5 +36,7 @@ class Platform(pygame.sprite.Sprite):
     
 
     def draw_platform(self, screen: pygame.surface.Surface):
-        pygame.draw.rect(screen, (0, 0, 255), self.__platform_area)
+        # pygame.draw.rect(screen, (0, 0, 255), self.__platform_area)
+        # pygame.draw.rect(screen, (255, 0, 0), self.__platform_left_border)
+        # pygame.draw.rect(screen, (255, 0, 0), self.__platform_right_border)
         screen.blit(self.__platform_image, self.__platform_area)

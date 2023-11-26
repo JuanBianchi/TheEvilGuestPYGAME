@@ -1,11 +1,13 @@
 {
     "stage_1": {
         "enemy": {
-            "walk_speed": 0,
-            "run_speed": 0,
+            "walk_speed": 4,
+            "run_speed": 16,
             "walk_img_path": "./assets/img/enemies/walk/1.png",
             "life": 500,
-            "kill_points": 100
+            "kill_points": 100,
+            "frame_rate": 10,
+            "gravity": 12
         },
         "player": {
             "walk_img_path": "./assets/img/player/walk/leonwalk.png",
@@ -25,7 +27,7 @@
             "coords": [
                 {
                     "coord_x": 0,
-                    "coord_y": 400
+                    "coord_y": 450
                 }
             ]
         },
@@ -45,20 +47,20 @@
             "max_amount_enemies": 4,
             "coords_enemies": [
                 {
-                    "coord_x": 0,
-                    "coord_y": 310
+                    "coord_x": 530,
+                    "coord_y": 103
                 },
                 {
-                    "coord_x": 0,
-                    "coord_y": 310
+                    "coord_x": 70,
+                    "coord_y": 103
                 },
                 {
-                    "coord_x": 0,
-                    "coord_y": 310
+                    "coord_x": 530,
+                    "coord_y": 303
                 },
                 {
-                    "coord_x": 0,
-                    "coord_y": 310
+                    "coord_x": 70,
+                    "coord_y": 303
                 }
             ],
             "max_amount_platforms": 4,
