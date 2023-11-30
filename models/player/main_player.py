@@ -43,7 +43,10 @@ class Jugador(pg.sprite.Sprite):
         self.__bullet_cooldown = SHOT_COOLDOWN
         #Colisiones
         self.__is_on_platform = True
-        # self.__puntaje
+        self.__is_stunned = False
+        self.__is_under_attack = False
+        self.__attack_duration = 1000
+        self.__attack_start_time = 0
     
 
     @property
@@ -107,13 +110,14 @@ class Jugador(pg.sprite.Sprite):
 
     
     def jump(self, jumping=True):
-        if jumping and self.__remaining_jumps > 0 and not self.__is_jumping:
-            self.__set_y_animations_preset()
-            self.__is_jumping = True
-            self.__remaining_jumps -= 1
-        elif not self.__is_jumping:
-            self.__is_jumping = False
-            self.stay()
+        if not self.__is_under_attack:
+            if jumping and self.__remaining_jumps > 0 and not self.__is_jumping:
+                self.__set_y_animations_preset()
+                self.__is_jumping = True
+                self.__remaining_jumps -= 1
+            elif not self.__is_jumping:
+                self.__is_jumping = False
+                self.stay()
 
     
     def shoot(self, direction: str = 'Right'):
@@ -122,11 +126,12 @@ class Jugador(pg.sprite.Sprite):
                 case 'Right':
                     look_right = True
                     self.__set_x_animations_preset(0, self.__shoot_r, look_r=look_right)
-                    self.__bullet_group.add(self.create_bullet())
+                    self.shot_bullet()
                 case 'Left':
                     look_right = False
                     self.__set_x_animations_preset(0, self.__shoot_l, look_r=look_right)
-                    self.__bullet_group.add(self.create_bullet())
+                    self.shot_bullet()
+                    
 
 
     def get_inputs(self):
@@ -163,13 +168,34 @@ class Jugador(pg.sprite.Sprite):
             self.__bullet_current_time = pg.time.get_ticks()
 
 
+    def hit_check(self, stunned):
+        if stunned:
+            self.__is_stunned = stunned
+            self.is_under_attack = True
+            self.attack_start_time = pg.time.get_ticks()
+
+
+    def move_back(self, pixels):
+        if self.__is_looking_right and self.__is_stunned:
+            self.rect.x -= pixels
+        elif not self.__is_looking_right and self.__is_stunned:
+            self.rect.x += pixels
+
+    
+    def under_attack_check(self):
+        if self.__is_under_attack:
+            current_time = pg.time.get_ticks()
+            if current_time - self.__attack_start_time >= self.__attack_duration:
+                self.__is_under_attack = False
+                self.__attack_start_time = 0
+
 
     def shot_bullet(self):
         self.__bullet_group.add(self.create_bullet())
 
 
     def create_bullet(self):
-        return Bullet(self.rect.centerx, self.rect.centery - 10, 50, "Right" if self.__is_looking_right else "Left")
+        return Bullet("normal", self.rect.centerx, self.rect.centery - 10, 50, "Right" if self.__is_looking_right else "Left", self.__frame_rate)
 
     
     def shot_cooldown(self):
@@ -197,7 +223,7 @@ class Jugador(pg.sprite.Sprite):
             self.__player_move_time = 0
             self.rect.x += self.__set_x_borders_limit()
             #self.rect.y += self.__gravity
-            if self.rect.y < 450:
+            if self.rect.y < 600:
                 self.rect.y += self.__gravity
             
             if self.__is_jumping:
@@ -236,11 +262,12 @@ class Jugador(pg.sprite.Sprite):
                     self.__is_jumping = False
                 
                 if self.rect.x < platform.get_platform_area.left:
-                    # El jugador está colisionando desde la izquierda
                     self.rect.right = platform.get_platform_area.left
                 elif self.rect.x > platform.get_platform_area.right:
-                    # El jugador está colisionando desde la derecha
                     self.rect.left = platform.get_platform_area.right
+
+
+
 
 
     def update(self, delta_ms):
@@ -248,8 +275,9 @@ class Jugador(pg.sprite.Sprite):
         self.do_movement(delta_ms)
         self.do_animation(delta_ms)
         self.shot_cooldown()
+        self.under_attack_check()
 
-        if self.rect.y >= 450: # Si toca el '''suelo'''
+        if self.rect.y >= 600:
             self.__remaining_jumps = self.__max_jumps
 
     def draw_player(self, screen: pg.surface.Surface):

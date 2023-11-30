@@ -13,6 +13,8 @@ class Platform(pygame.sprite.Sprite):
         self.__platform_left_border = pygame.Rect(self.rect.left, self.rect.y, 2, height)
         self.__platform_right_border = pygame.Rect(self.rect.right, self.rect.y, 2, height)
         self.__platform_group = pygame.sprite.Group()
+        self.__moving_down = False
+    
 
     @property
     def get_platform_area(self):
@@ -29,6 +31,18 @@ class Platform(pygame.sprite.Sprite):
     @property
     def get_platform_group(self):
         return self.__platform_group
+
+
+    def move_platform_up_down(self):
+        if self.__platform_area.bottom > 80 and not self.__moving_down:
+            self.__platform_area.y -= 5
+            if self.__platform_area.bottom <= 80:
+                self.__moving_down = True
+
+        elif self.__platform_area.top < 480 and self.__moving_down:
+            self.__platform_area.y += 5
+            if self.__platform_area.top >= 480:
+                self.__moving_down = False
 
 
     def update(self, screen: pygame.surface.Surface):

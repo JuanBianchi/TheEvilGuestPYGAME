@@ -1,13 +1,23 @@
 {
     "stage_1": {
-        "enemy": {
-            "walk_speed": 4,
-            "run_speed": 16,
-            "walk_img_path": "./assets/img/enemies/walk/1.png",
-            "life": 500,
-            "kill_points": 100,
-            "frame_rate": 10,
-            "gravity": 12
+        "background_img": "./assets/img/background/Forest.png",
+        "enemy":{
+                "type": "a",
+                "walk_speed": 4,
+                "run_speed": 16,
+                "iddle_img_path": "",
+                "walk_img_path": "./assets/img/enemies/zombie a/walk/1.png",
+                "attack_img_path": "./assets/img/enemies/zombie a/attack/0.png",
+                "death_img_path": "./assets/img/enemies/zombie a/death/0.png",
+                "walk_img_cols": 8,
+                "death_img_cols": 5,
+                "iddle_img_cols": 0,
+                "attack_img_cols": 4,
+                "rows": 1,
+                "life": 500,
+                "kill_points": 100,
+                "frame_rate": 10,
+                "gravity": 12
         },
         "player": {
             "walk_img_path": "./assets/img/player/walk/leonwalk.png",
@@ -37,10 +47,18 @@
             "coord_x": 0,
             "coord_y": 0
         },
+        "floor":{
+            "floor_img": "./",
+            "width": 250,
+            "height": 110
+        },
         "platform": {
-            "platform_img_path": "./assets/img/platform/wooden_platform.png",
-            "width": 200,
-            "height": 20
+            "platform_img_path": "./assets/img/platform/wooden_platform.png"
+        },
+        "traps": {
+            "trap_img_path": "./assets/img/traps/spikes/spikes_long.png",
+            "width": 300,
+            "height": 80
         },
         "stage": {
             "stage_background": "./",
@@ -63,7 +81,18 @@
                     "coord_y": 303
                 }
             ],
-            "max_amount_platforms": 4,
+            "max_amount_floors": 2,
+            "coords_floors": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 500
+                },
+                {
+                    "coord_x": 550,
+                    "coord_y": 500                    
+                }
+            ],
+            "max_amount_platforms": 5,
             "coords_platforms": [
                 {
                     "coord_x": 530,
@@ -80,9 +109,42 @@
                 {
                     "coord_x": 70,
                     "coord_y": 350
+                },
+                {
+                    "coord_x": 340,
+                    "coord_y": 500
                 }
             ],
-            "lifes": 0
+            "platform_measurements": [
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 100,
+                    "height": 20
+                }
+             ],
+            "max_amount_traps": 1,
+            "trap_type": "spikes",
+            "coords_trap": [
+                {
+                    "coord_x": 250,
+                    "coord_y": 530 
+                }
+            ]
         }
     }
 }
