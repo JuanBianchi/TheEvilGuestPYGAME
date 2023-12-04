@@ -2,10 +2,10 @@ import pygame as pg
 from models.auxiliar.surface_manager import SurfaceManager as sfm
 from models.bullet.bullet import Bullet
 #from models.platform.platforms import Platform
-from constantes import ANCHO_VENT, SHOT_COOLDOWN, DEBUG
+from constantes import ANCHO_VENT, ALTO_VENT, ALTURA_MAX_SALTO, SHOT_COOLDOWN, DEBUG
 
 class Jugador(pg.sprite.Sprite):
-    def __init__(self, coord_x, coord_y, frame_rate, speed_walk = 6, speed_run = 12, gravity = 16, jump = 12, max_jumps = 1) -> None:
+    def __init__(self, coord_x, coord_y, frame_rate, speed_walk, speed_run, gravity, jump, lifes, total_lifes, max_jumps = 1) -> None:
         super().__init__()
         self.__iddle_r = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1)
         self.__iddle_l = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1, flip=True)
@@ -17,6 +17,8 @@ class Jugador(pg.sprite.Sprite):
         self.__jump_l = sfm.get_surface_from_spritesheet("./assets/img/player/jump/leonjump.png", 4, 1, flip=True)
         self.__shoot_r = sfm.get_surface_from_spritesheet("./assets/img/player/shoot/leonshoot.png", 2, 1)
         self.__shoot_l = sfm.get_surface_from_spritesheet("./assets/img/player/shoot/leonshoot.png", 2, 1, flip=True)
+        self.__death_r = sfm.get_surface_from_spritesheet("./assets/img/player/death/leondeath.png", 6, 1)
+        self.__death_l = sfm.get_surface_from_spritesheet("./assets/img/player/death/leondeath.png", 6, 1, flip=True)
         self.__speed_walk = speed_walk
         self.__speed_run = speed_run
         self.__frame_rate = frame_rate
@@ -24,8 +26,11 @@ class Jugador(pg.sprite.Sprite):
         self.__player_animation_time = 0
         self.__gravity = gravity
         self.__jump = jump
+        self.__lifes = lifes
+        self.__max_lifes = total_lifes
         self.__max_jumps = max_jumps
         self.__remaining_jumps = self.__max_jumps
+        self.__is_alive = True
         self.__is_jumping = False
         self.__is_still = True
         self.__initial_frame = 0
@@ -41,12 +46,15 @@ class Jugador(pg.sprite.Sprite):
         self.__is_ready = True
         self.__bullet_current_time = 0
         self.__bullet_cooldown = SHOT_COOLDOWN
+        self.__bullet_damage = 100
         #Colisiones
         self.__is_on_platform = True
         self.__is_stunned = False
         self.__is_under_attack = False
         self.__attack_duration = 1000
         self.__attack_start_time = 0
+        #Puntos
+        self.__total_points = 0
     
 
     @property
@@ -69,6 +77,46 @@ class Jugador(pg.sprite.Sprite):
     def get_player_group(self) -> pg.sprite.Group:
         return self.__player_group
     
+    @property
+    def get_player_health(self):
+        return self.__health
+    
+    @get_player_health.setter
+    def set_player_health(self, new_health):
+        self.__health += new_health
+
+    @property
+    def get_player_lifes(self):
+        return self.__lifes
+    
+
+    @get_player_lifes.setter    # Por si agarro un objeto vida
+    def set_player_lifes(self, new_life):
+        self.__lifes = new_life
+
+
+    @property
+    def get_player_max_lifes(self):
+        return self.__max_lifes
+
+
+    @property
+    def get_is_alive_status(self):
+        return self.__is_alive
+    
+    @property
+    def get_bullet_damage(self):
+        return self.__bullet_damage
+
+    @property
+    def get_total_points(self):
+        return self.__total_points
+
+    @get_total_points.setter
+    def set_total_points(self, points):
+        self.__total_points = points
+
+    
     def __set_x_animations_preset(self, move_x, animation_list: list[pg.surface.Surface], look_r: bool):
         self.rect.x += move_x
         self.__actual_animation = animation_list
@@ -83,45 +131,54 @@ class Jugador(pg.sprite.Sprite):
 
 
     def walk(self, direction: str = 'Right'):
-        match direction:
-            case 'Right':
-                look_right = True
-                self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r=look_right)
-            case 'Left':
-                look_right = False
-                self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r=look_right)
+        if self.__is_alive:
+            match direction:
+                case 'Right':
+                    look_right = True
+                    self.__set_x_animations_preset(self.__speed_walk, self.__walk_r, look_r=look_right)
+                    self.__is_still = False
+                case 'Left':
+                    look_right = False
+                    self.__set_x_animations_preset(-self.__speed_walk, self.__walk_l, look_r=look_right)
+                    self.__is_still = False
 
 
     def stay(self):
-        if self.__actual_animation != self.__iddle_l and self.__actual_animation != self.__iddle_r:
-            self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
-            self.__initial_frame = 0
+        if self.__is_alive:
+            if self.__actual_animation != self.__iddle_l and self.__actual_animation != self.__iddle_r:
+                self.__actual_animation = self.__iddle_r if self.__is_looking_right else self.__iddle_l
+                self.__initial_frame = 0
+                self.__is_still = True
             
 
     def run(self, direction: str = 'Right'):
-            #self.__initial_frame = 0
+        if self.__is_alive:
             match direction:
                 case 'Right':
                     look_right = True
                     self.__set_x_animations_preset(self.__speed_run, self.__run_r, look_r=look_right)
+                    self.__is_still = False
                 case 'Left':
                     look_right = False
                     self.__set_x_animations_preset(-self.__speed_run, self.__run_l, look_r=look_right)
+                    self.__is_still = False
 
     
-    def jump(self, jumping=True):
-        if not self.__is_under_attack:
+    def jump(self, jumping):
+        if self.__is_alive:
             if jumping and self.__remaining_jumps > 0 and not self.__is_jumping:
                 self.__set_y_animations_preset()
                 self.__is_jumping = True
                 self.__remaining_jumps -= 1
-            elif not self.__is_jumping:
+                self.__is_still = False
+            elif not jumping and self.__is_jumping:
                 self.__is_jumping = False
                 self.stay()
+            
 
     
     def shoot(self, direction: str = 'Right'):
-        if self.__is_still:
+        if self.__is_still and self.__is_alive:
             match direction:
                 case 'Right':
                     look_right = True
@@ -176,10 +233,11 @@ class Jugador(pg.sprite.Sprite):
 
 
     def move_back(self, pixels):
-        if self.__is_looking_right and self.__is_stunned:
-            self.rect.x -= pixels
-        elif not self.__is_looking_right and self.__is_stunned:
-            self.rect.x += pixels
+        if self.__is_alive:
+            if self.__is_looking_right and self.__is_stunned:
+                self.rect.x -= pixels
+            elif not self.__is_looking_right and self.__is_stunned:
+                self.rect.x += pixels
 
     
     def under_attack_check(self):
@@ -218,36 +276,46 @@ class Jugador(pg.sprite.Sprite):
 
 
     def do_movement(self, delta_ms):
-        self.__player_move_time += delta_ms
-        if self.__player_move_time >= self.__frame_rate:
-            self.__player_move_time = 0
-            self.rect.x += self.__set_x_borders_limit()
-            #self.rect.y += self.__gravity
-            if self.rect.y < 600:
-                self.rect.y += self.__gravity
-            
-            if self.__is_jumping:
-                self.rect.y -= self.__jump
-                if self.rect.y <= 0:
-                    self.__is_jumping = False
+        if self.__is_alive:
+            self.__player_move_time += delta_ms
+            if self.__player_move_time >= self.__frame_rate:
+                self.__player_move_time = 0
+                self.rect.x += self.__set_x_borders_limit()
+                #self.rect.y += self.__gravity
+                if self.rect.y < ALTO_VENT:
+                    self.rect.y += self.__gravity
+                
+                if self.__is_jumping:
+                    self.rect.y -= self.__jump
+                    if self.rect.y <= ALTURA_MAX_SALTO:
+                        self.__is_jumping = False
+
     
 
     def do_animation(self, delta_ms):
-        self.__player_animation_time += delta_ms
-        if self.__player_animation_time >= self.__frame_rate:
-            self.__player_animation_time = 0
-            if not self.__is_jumping:
-                if self.__initial_frame < len(self.__actual_animation) - 1:
-                    self.__initial_frame += 1
+        if self.__is_alive:
+            self.__player_animation_time += delta_ms
+            if self.__player_animation_time >= self.__frame_rate:
+                self.__player_animation_time = 0
+                if not self.__is_jumping:
+                    if self.__initial_frame < len(self.__actual_animation) - 1:
+                        self.__initial_frame += 1
+                    else:
+                        self.__initial_frame = 0
                 else:
-                    self.__initial_frame = 0
+                    self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
+                    if self.__initial_frame < len(self.__actual_animation) - 1:
+                        self.__initial_frame += 1
+                    else:
+                        self.__initial_frame = 0
+                        self.__is_jumping = False
+        else:
+            self.__actual_animation = self.__death_r if self.__is_looking_right else self.__death_l
+            if self.__initial_frame < len(self.__actual_animation) - 1:
+                self.__initial_frame += 1
             else:
-                self.__actual_animation = self.__jump_r if self.__is_looking_right else self.__jump_l
-                if self.__initial_frame < len(self.__actual_animation) - 1:
-                    self.__initial_frame += 1
-                else:
-                    self.__initial_frame = 0
-                    self.__is_jumping = False
+                self.__initial_frame = len(self.__actual_animation) - 1
+                self.__is_alive = False
                     
 
     def check_platform_collision(self, platforms):
@@ -267,7 +335,11 @@ class Jugador(pg.sprite.Sprite):
                     self.rect.left = platform.get_platform_area.right
 
 
-
+    def reduce_lifes(self):
+        if self.__is_alive:
+            self.__lifes -= 1
+            if self.__lifes <= 0:
+                self.__is_alive = False
 
 
     def update(self, delta_ms):

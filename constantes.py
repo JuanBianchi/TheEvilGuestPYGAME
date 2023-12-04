@@ -5,5 +5,7 @@ PLAYER_FPS = 10
 AZUL = (0,255,0)
 SHOT_COOLDOWN = 700
 DEBUG = True
+ALTURA_MAX_SALTO = 350
 
 JSON_CONFIG_PATH = "./configs/configs.json"
+IMG_PATH = "./assets/img"

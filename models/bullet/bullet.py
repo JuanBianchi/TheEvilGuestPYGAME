@@ -1,13 +1,13 @@
 import pygame
 from models.auxiliar.surface_manager import SurfaceManager as sfm
-from models.constantes import ANCHO_VENT
+from constantes import ANCHO_VENT
 
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, type, pos_x, pos_y, speed, direction, frame_rate) -> None:
+    def __init__(self, bullet_type, pos_x, pos_y, speed, direction, frame_rate) -> None:
         super().__init__()
-        self.__bullet_img = self.load_img(type, direction)
+        self.__bullet_img = self.load_img(bullet_type, direction)
         self.__speed = speed
         self.__frame_rate = frame_rate
         self.__bullet_animation_time = 0
@@ -22,6 +22,11 @@ class Bullet(pygame.sprite.Sprite):
     def get_bullet_rect(self):
         return self.bullet_rect
 
+    @property
+    def get_damage(self):
+        return self.__damage
+
+
     def load_img(self, bullet_type, direction):
         if bullet_type == 'normal':
             if direction == "Right":
@@ -31,8 +36,10 @@ class Bullet(pygame.sprite.Sprite):
         elif bullet_type == 'hatchet':
             if direction == 'Right':
                 self.__bullet_img = sfm.get_surface_from_spritesheet("./assets/img/projectile/hatchet/hatchet.png", 7, 1)
+                self.__bullet_img = [pygame.transform.scale(img, (50, 20)) for img in self.__bullet_img]
             elif direction == 'Left':
                 self.__bullet_img = sfm.get_surface_from_spritesheet("./assets/img/projectile/hatchet/hatchet.png", 7, 1, flip=True)
+                self.__bullet_img = [pygame.transform.scale(img, (50, 20)) for img in self.__bullet_img]
 
         return self.__bullet_img
     
@@ -45,16 +52,6 @@ class Bullet(pygame.sprite.Sprite):
             else:
                 self.__initial_frame = 0
 
-    # def bullet_movement(self, direction):
-        # match self.__direction:
-        #         case 'Left':
-        #             self.rect.x -= self.__speed
-        #             if self.rect.x >= 800:
-        #                 self.kill()
-        #         case 'Right':
-        #             self.rect.x += self.__speed
-        #             if self.rect.x <= 0:
-        #                 self.kill()
 
     def update(self, screen: pygame.surface.Surface, delta_ms):
         match self.__direction:
@@ -66,7 +63,8 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.x += self.__speed
                 if self.rect.x >= ANCHO_VENT:
                     self.kill()
-        
+
+
         self.do_animation(delta_ms)
         self.draw(screen)
 

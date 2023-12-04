@@ -50,7 +50,4 @@ class Platform(pygame.sprite.Sprite):
     
 
     def draw_platform(self, screen: pygame.surface.Surface):
-        # pygame.draw.rect(screen, (0, 0, 255), self.__platform_area)
-        # pygame.draw.rect(screen, (255, 0, 0), self.__platform_left_border)
-        # pygame.draw.rect(screen, (255, 0, 0), self.__platform_right_border)
         screen.blit(self.__platform_image, self.__platform_area)

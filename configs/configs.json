@@ -1,20 +1,21 @@
 {
     "stage_1": {
         "background_img": "./assets/img/background/Forest.png",
+        "stage_music": "./",
         "enemy":{
                 "type": "a",
                 "walk_speed": 4,
                 "run_speed": 16,
                 "iddle_img_path": "",
-                "walk_img_path": "./assets/img/enemies/zombie a/walk/1.png",
-                "attack_img_path": "./assets/img/enemies/zombie a/attack/0.png",
-                "death_img_path": "./assets/img/enemies/zombie a/death/0.png",
+                "walk_img_path": "./assets/img/enemies/zombie a/walk/WALK.png",
+                "attack_img_path": "./assets/img/enemies/zombie a/attack/ATTACK.png",
+                "death_img_path": "./assets/img/enemies/zombie a/death/DEATH.png",
                 "walk_img_cols": 8,
                 "death_img_cols": 5,
                 "iddle_img_cols": 0,
                 "attack_img_cols": 4,
                 "rows": 1,
-                "life": 500,
+                "health": 500,
                 "kill_points": 100,
                 "frame_rate": 10,
                 "gravity": 12
@@ -25,7 +26,7 @@
             "jump_img_path": "./assets/img/player/jump/leonjump.png",
             "iddle_img_path": "./assets/img/player/iddle/leoniddle.png",
             "shoot_img_path": "./assets/img/player/shoot/leonshoot.png",
-            "death_img_path": "./",
+            "death_img_path": "./assets/img/player/death/leondeath.png",
             "jump": 35,
             "max_jumps": 1,
             "gravity": 12,
@@ -33,7 +34,8 @@
             "run_speed": 12,
             "frame_rate": 10, 
             "shoot_cooldown": 700,
-            "lives": 3,
+            "lifes": 2,
+            "total_lifes": 3,
             "coords": [
                 {
                     "coord_x": 0,
@@ -48,7 +50,7 @@
             "coord_y": 0
         },
         "floor":{
-            "floor_img": "./",
+            "floor_img_path": "./assets/img/platform/wooden_platform.png",
             "width": 250,
             "height": 110
         },
@@ -56,9 +58,35 @@
             "platform_img_path": "./assets/img/platform/wooden_platform.png"
         },
         "traps": {
-            "trap_img_path": "./assets/img/traps/spikes/spikes_long.png",
+            "trap_spikes_img_path": "./assets/img/traps/spikes/spikes_long.png",
+            "trap_saw_img_path": "./assets/img/traps/saw/saw.png",
             "width": 300,
-            "height": 80
+            "height": 80,
+            "frame_rate": 13,
+            "saw_img_cols": 4,
+            "saw_img_rows": 1
+        },
+        "coins": {
+            "name": "silver_coin",
+            "type": "coin",
+            "sub_type": "game_coins",
+            "img_rows": 1,
+            "img_columns": 8,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "points": 15
+        },
+        "lifes": {
+            "name": "green_herb",
+            "type": "lifes",
+            "sub_type": "herbs",
+            "img_columns": 1,
+            "img_rows": 1,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "value": 1
         },
         "stage": {
             "stage_background": "./",
@@ -142,9 +170,29 @@
             "coords_trap": [
                 {
                     "coord_x": 250,
-                    "coord_y": 530 
+                    "coord_y": 520 
                 }
-            ]
+            ],
+            "max_amount_coins": 4,
+            "coords_coins": [
+                {
+                    "coord_x": 700,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 700,
+                    "coord_y": 330
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 330
+                }
+            ],
+            "max_amount_lifes": 0
         }
     }
 }
