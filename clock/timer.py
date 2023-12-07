@@ -13,3 +13,6 @@ class Timer():
 
     def is_expired(self):
         return True if self.__elapsed_time >= self.__max_time else False
+    
+    def reset(self):
+        self.__elapsed_time = 0

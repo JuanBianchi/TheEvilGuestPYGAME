@@ -8,14 +8,16 @@ from models.traps.traps import Traps
 from models.items.items import Item
 from models.items.coins import Coin
 from models.items.life import Life
+from clock.timer import Timer
 
 
 class Stage():
-    def __init__(self, screen: pygame.surface.Surface, stage: str) -> None:
-        self.config = open_configs().get(stage)
+    def __init__(self, screen: pygame.surface.Surface, current_stage) -> None:
+        pygame.mixer.init()
+        self.__current_stage_key = current_stage
+        self.config = open_configs().get(self.__current_stage_key)
         self.__screen = screen
         self.__background = pygame.image.load(self.config.get('background_img'))
-        #self.__bgm = self.set_background_music() 
         self.__player_configs = self.config.get('player')
         self.player = Jugador(self.__player_configs.get('coords')[0]["coord_x"], 
                                 self.__player_configs.get('coords')[0]["coord_y"],
@@ -37,6 +39,9 @@ class Stage():
         self.__coins_configs = self.config.get('coins')
         self.__lifes_configs = self.config.get('lifes')
 
+        self.__coin_sound = pygame.mixer.Sound('./assets/sounds/items/coins/RE4 pesetas sound.wav')
+        self.__life_sound = pygame.mixer.Sound('./assets/sounds/items/lifes/RE4 herb sound.wav')
+
 
         self.__platforms = list()
         self.create_platforms()
@@ -56,6 +61,14 @@ class Stage():
         self.__lifes = list()
         self.create_lifes()
 
+
+    @property
+    def get_current_stage(self):
+        return self.__current_stage_key
+    
+    @get_current_stage.setter
+    def set_current_stage(self, stage):
+        self.__current_stage_key = stage
 
     @property
     def get_platforms(self):
@@ -208,36 +221,33 @@ class Stage():
                     self.player.set_total_points += enemy.get_enemy_kill_points
                     enemy.set_has_been_counted = True
 
+
             if pygame.sprite.spritecollide(self.player, enemy.get_enemy_group, False) and enemy.get_is_alive_status:
                 # SI EL JUGADOR MUERE, MOSTRAR PANTALLA DE 'YOU ARE DEAD'.
-                #AGREGAR EFECTO DE SONIDO
                 enemy.attack()
                 self.player.reduce_lifes()
-                print(self.player.get_player_lifes)
-                # EN REALIDAD TIENE QUE RESTARSELE UNA VIDA AL JUGADOR
+            
             for bullet in enemy.get_enemy_bullet_group:
                 if pygame.sprite.collide_rect(bullet, self.player):
                     # SI EL JUGADOR MUERE, MOSTRAR PANTALLA DE 'YOU ARE DEAD'.
-                    #AGREGAR EFECTO DE SONIDO
                     print("Me pegó")
                     self.player.reduce_lifes()
-                    print(self.player.get_player_lifes)
                     bullet.kill()
-
-    
+        
+        
     def check_traps(self):
         for trap in self.get_traps:
             if pygame.sprite.collide_rect(self.player, trap):
                 print("Estoy en la trampa")
                 self.player.reduce_lifes()
-                # JUGADOR MUERE. SE LE DESCUENTAN TODAS LAS VIDAS.
+                # JUGADOR MUERE. SE LE DESCUENTAN TODAS LAS VIDAS, MOSTRAR PANTALLA DE 'YOU ARE DEAD'.
 
 
     def check_coins(self):
         for coin in self.get_coins:
             if pygame.sprite.spritecollide(self.player, coin.get_item_group, True):
                 print("Colisión con moneda detectada")
-                #AGREGAR EFECTO DE SONIDO
+                self.__coin_sound.play()
                 self.player.set_total_points += coin.get_points
                 print(f"Total points: {self.player.get_total_points}")
 
@@ -246,14 +256,25 @@ class Stage():
         for life in self.get_lifes:
             if pygame.sprite.collide_rect(life, self.player):
                 if self.player.get_player_lifes < self.player.get_player_max_lifes:
+                    self.__life_sound.play()
                     self.player.set_player_lifes += life.get_extra_life
                     life.kill()
                 elif self.player.get_player_lifes == self.player.get_player_max_lifes:
                     pass
 
 
-    def check_stage_win(self):
-        if self.__enemies == 0:
-            print("Juego terminado")
+    def play_stage_music(self):
+        self.background_music = pygame.mixer.Sound(self.config.get('stage_music'))
+        self.background_music.play(-1)
+        self.background_music.set_volume(0.1)
 
-    
+
+    def check_stage_win(self):
+        rtn = None
+        if len(self.__enemies) == 0:
+            print("You killed them all!")
+            rtn = True
+        else:
+            rtn = False
+
+        return rtn

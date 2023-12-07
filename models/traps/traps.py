@@ -47,14 +47,14 @@ class Traps(pygame.sprite.Sprite):
                 self.__initial_frame = 0
 
 
-    def move_trap_up_down(self):
+    def move_trap_up_down(self, speed):
         if self.rect.bottom > 80 and not self.__moving_down:
-            self.rect.y -= 5
+            self.rect.y -= speed
             if self.rect.bottom <= 80:
                 self.__moving_down = True
 
         elif self.rect.top < 480 and self.__moving_down:
-            self.rect.y += 5
+            self.rect.y += speed
             if self.rect.top >= 480:
                 self.__moving_down = False
 

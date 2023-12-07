@@ -7,16 +7,20 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, enemy_type: str, coord_x, coord_y, frame_rate, walk_speed, run_speed, gravity, constraint_x_right, constraint_x_left,
                 walk_img_path, attack_img_path, death_img_path, iddle_img_path, walk_cols, attack_cols, death_cols, iddle_cols, player, health, points) -> None:
         super().__init__()
+        pygame.mixer.init()
         self.__walk_r = sfm.get_surface_from_spritesheet(walk_img_path, walk_cols, 1)
         self.__walk_l = sfm.get_surface_from_spritesheet(walk_img_path, walk_cols, 1, flip=True)
         self.__attack_r = sfm.get_surface_from_spritesheet(attack_img_path, attack_cols, 1)
         self.__attack_l = sfm.get_surface_from_spritesheet(attack_img_path, attack_cols, 1, flip=True)
-        self.__attack_framerate = frame_rate * 1
+        self.__attack_framerate = frame_rate * 0.5
         self.__death_r = sfm.get_surface_from_spritesheet(death_img_path, death_cols, 1)
         self.__death_l = sfm.get_surface_from_spritesheet(death_img_path, death_cols, 1, flip=True)
         self.__iddle_r = sfm.get_surface_from_spritesheet(iddle_img_path, iddle_cols, 1)
         self.__iddle_l = sfm.get_surface_from_spritesheet(iddle_img_path, iddle_cols, 1, flip=True)
         self.__type = enemy_type
+        self.screech_sound = pygame.mixer.Sound("./assets/sounds/enemy/screech/zombie screech.wav")
+        self.attack_sound = pygame.mixer.Sound("./assets/sounds/enemy/attack/zombie attack.wav")
+        self.death_sound = pygame.mixer.Sound("./assets/sounds/enemy/death/zombie death.wav")
         # self.__img_cols = cols
         # self.__img_rows = rows
         self.__walk = walk_speed
@@ -31,15 +35,15 @@ class Enemy(pygame.sprite.Sprite):
         self.__enemy_group = pygame.sprite.Group()
         self.__enemy_group.add(self)
         self.__initial_frame = 0
-        self.__actual_animation = self.__walk_r
+        self.__actual_animation = self.__attack_l
         self.__actual_img_animation = self.__actual_animation[self.__initial_frame]
-        #self.__actual_img_animation = pygame.transform.scale(self.__actual_img_animation, (10, 10))
         self.rect = self.__actual_img_animation.get_rect()
         self.rect.x = coord_x
         self.rect.y = coord_y
         self.__max_x_constraint = constraint_x_right
         self.__min_x_constraint = constraint_x_left
         self.__is_alive = True
+        self.__is_walking = True
         self.__has_been_counted = False
         # Ataques
         self.__is_attacking = False
@@ -109,10 +113,14 @@ class Enemy(pygame.sprite.Sprite):
     def attack(self):
         if self.__is_alive and self.rect.colliderect(self.__player.get_player_rect):
             self.__is_attacking = True
+            self.attack_sound.play()
             self.hit_player_check(self.__is_attacking)
             self.__last_attack_time = pygame.time.get_ticks()
             self.__initial_frame = 0
         elif self.__is_alive:
+            self.__is_attacking = False
+            self.hit_player_check(self.__is_attacking)
+        elif not self.__is_alive:
             self.__is_attacking = False
             self.hit_player_check(self.__is_attacking)
 
@@ -139,6 +147,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def shoot_is_ready(self):
         if self.__is_ready and self.__is_alive:
+            self.__is_attacking = True
             self.shot_bullet()
             self.__is_ready = False
             self.__bullet_current_time = pygame.time.get_ticks()    
@@ -155,8 +164,11 @@ class Enemy(pygame.sprite.Sprite):
 
             if self.__is_attacking:
                 self.attack_animation()
-            else:
+            elif self.__type == "a" and self.__is_walking:
                 self.walk_animation()
+            elif self.__type == "b" and not self.__is_attacking:
+                self.iddle_animation()
+
         else:
             self.__enemy_animation_time += delta_ms
             if self.__enemy_animation_time >= self.__frame_rate:
@@ -181,12 +193,20 @@ class Enemy(pygame.sprite.Sprite):
     def attack_animation(self):
         self.__actual_animation = self.__attack_r if self.__enemy_is_looking_right else self.__attack_l
         if self.__enemy_animation_time >= self.__attack_framerate:
-            #self.__actual_animation = self.__attack_r if self.__enemy_is_looking_right else self.__attack_l
             if self.__initial_frame < len(self.__actual_animation) - 1:
                 self.__initial_frame += 1
             else:
+                self.__initial_frame = 0
                 self.__is_attacking = False
-                self.__actual_animation = self.__walk_r if self.__enemy_is_looking_right else self.__walk_l
+                self.__is_walking = True
+
+
+    def iddle_animation(self):
+        self.__actual_animation = self.__iddle_r if self.__enemy_is_looking_right else self.__iddle_l
+        if self.__enemy_animation_time >= self.__frame_rate:
+            if self.__initial_frame < len(self.__actual_animation) - 1:
+                self.__initial_frame += 1
+            else:
                 self.__initial_frame = 0
 
 
@@ -200,9 +220,10 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, delta_ms, screen: pygame.surface.Surface):
         self.do_movement(delta_ms)
-        self.do_animation(delta_ms)
         self.shot_cooldown()
-        #self.shoot_is_ready()      # ESTE METODO LO LLAMO DESDE LA INSTANCIA DEL OBJETO ENEMIGO
+        if self.__type == "b":
+            self.shoot_is_ready()
+        self.do_animation(delta_ms)
         self.update_bullets(screen, delta_ms)
         self.draw_enemy(screen)
 

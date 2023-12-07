@@ -7,6 +7,7 @@ from constantes import ANCHO_VENT, ALTO_VENT, ALTURA_MAX_SALTO, SHOT_COOLDOWN, D
 class Jugador(pg.sprite.Sprite):
     def __init__(self, coord_x, coord_y, frame_rate, speed_walk, speed_run, gravity, jump, lifes, total_lifes, max_jumps = 1) -> None:
         super().__init__()
+        pg.mixer.init()
         self.__iddle_r = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1)
         self.__iddle_l = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1, flip=True)
         self.__walk_r = sfm.get_surface_from_spritesheet("./assets/img/player/walk/leonwalk.png", 8, 1)
@@ -19,6 +20,7 @@ class Jugador(pg.sprite.Sprite):
         self.__shoot_l = sfm.get_surface_from_spritesheet("./assets/img/player/shoot/leonshoot.png", 2, 1, flip=True)
         self.__death_r = sfm.get_surface_from_spritesheet("./assets/img/player/death/leondeath.png", 6, 1)
         self.__death_l = sfm.get_surface_from_spritesheet("./assets/img/player/death/leondeath.png", 6, 1, flip=True)
+        self.death_sound = pg.mixer.Sound("./assets/sounds/player/death/Leon Death Sound.wav")
         self.__speed_walk = speed_walk
         self.__speed_run = speed_run
         self.__frame_rate = frame_rate
@@ -47,6 +49,7 @@ class Jugador(pg.sprite.Sprite):
         self.__bullet_current_time = 0
         self.__bullet_cooldown = SHOT_COOLDOWN
         self.__bullet_damage = 100
+        self.__shot_sound = pg.mixer.Sound("./assets/sounds/player/shot/re4 shot sound.wav")
         #Colisiones
         self.__is_on_platform = True
         self.__is_stunned = False
@@ -217,10 +220,12 @@ class Jugador(pg.sprite.Sprite):
             self.run('Left')
         if key_pressed_list[pg.K_f] and self.is_looking_right and self.__is_ready:
             self.shoot('Right')
+            self.__shot_sound.play()
             self.__is_ready = False
             self.__bullet_current_time = pg.time.get_ticks()
         if key_pressed_list[pg.K_f] and not self.is_looking_right and self.__is_ready:
             self.shoot('Left')
+            self.__shot_sound.play()
             self.__is_ready = False
             self.__bullet_current_time = pg.time.get_ticks()
 
@@ -340,7 +345,6 @@ class Jugador(pg.sprite.Sprite):
             self.__lifes -= 1
             if self.__lifes <= 0:
                 self.__is_alive = False
-
 
     def update(self, delta_ms):
         self.get_inputs()
