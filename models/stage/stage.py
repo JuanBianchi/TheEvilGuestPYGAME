@@ -18,6 +18,9 @@ class Stage():
         self.config = open_configs().get(self.__current_stage_key)
         self.__screen = screen
         self.__background = pygame.image.load(self.config.get('background_img'))
+        pygame.mixer.music.load(self.config.get('stage_music'))
+        pygame.mixer.music.set_volume(0.09)
+        pygame.mixer.music.play(-1)
         self.__player_configs = self.config.get('player')
         self.player = Jugador(self.__player_configs.get('coords')[0]["coord_x"], 
                                 self.__player_configs.get('coords')[0]["coord_y"],
@@ -41,6 +44,7 @@ class Stage():
 
         self.__coin_sound = pygame.mixer.Sound('./assets/sounds/items/coins/RE4 pesetas sound.wav')
         self.__life_sound = pygame.mixer.Sound('./assets/sounds/items/lifes/RE4 herb sound.wav')
+        self.__stage_won = pygame.mixer.Sound('./assets/sounds/stage/Victory fanfare.wav')
 
 
         self.__platforms = list()

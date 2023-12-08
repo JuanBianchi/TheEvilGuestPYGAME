@@ -13,7 +13,7 @@ class Game:
         self.stage_transition_timer = Timer(5)
         self.font = pygame.font.Font("./assets/fonts/FontsFree-Net-Horrorfind.ttf", 36)
         self.running = True
-        self.current_stage_key = 'stage_2'
+        self.current_stage_key = 'stage_1'
         self.stage = Stage(self.screen, self.current_stage_key)
 
     def run(self):
@@ -78,6 +78,9 @@ class Game:
     def stage_transition_timer_update(self, delta_ms):
         self.stage_transition_timer.update(delta_ms)
 
+
+    def pause_game(self):
+        pass
 
 
     def blit(self, delta_ms, screen):
