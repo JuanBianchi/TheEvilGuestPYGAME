@@ -2,63 +2,98 @@ import pygame
 from models.stage.stage import Stage
 from clock.timer import Timer
 from constantes import *
+from UI.form_pause import *
+from db.ranking import *
 
 class Game:
-    def __init__(self) -> None:
+    def __init__(self, initial_stage = 'stage_1') -> None:
         pygame.init()
         self.screen = pygame.display.set_mode((ANCHO_VENT, ALTO_VENT))
         self.clock = pygame.time.Clock()
         self.timer = Timer(100)
         self.enemy_timer = Timer(3)
         self.stage_transition_timer = Timer(5)
+        self.pause_menu = Pause(self.screen, 100, 100, 100, 200, (130, 130, 130), (0, 0, 0), active=True)
+        self.pause_timer = Timer(0)
+        self.is_paused = False
         self.font = pygame.font.Font("./assets/fonts/FontsFree-Net-Horrorfind.ttf", 36)
+        self.__game_over_screen = pygame.image.load("./assets/img/background/you are dead RE4.jpg")
+        self.__game_over_screen = pygame.transform.scale(self.__game_over_screen, (ANCHO_VENT, ALTO_VENT))
+        self.death_transition_timer = Timer(2)
         self.running = True
-        self.current_stage_key = 'stage_1'
+        self.current_stage_key = initial_stage
         self.stage = Stage(self.screen, self.current_stage_key)
 
     def run(self):
         while self.running:
-            self.handle_events()
             delta_ms = self.clock.tick(FPS)
-            self.update_player(delta_ms)
-            self.update_timer(delta_ms/1000)
-            self.blit(delta_ms, self.screen)
-            pygame.display.update()
+            self.handle_events()
+            if not self.is_paused:
+                self.update_player(delta_ms)
+                self.update_timer(delta_ms/1000)
+                self.blit(delta_ms, self.screen)
+                pygame.display.update()
 
-            for enemy in self.stage.get_enemies:
-                if not enemy.get_is_alive_status:
-                    self.enemy_timer_update(delta_ms/1000)
-                    if self.enemy_timer.is_expired():
-                        self.stage.get_enemies.remove(enemy)
-                        self.enemy_timer.reset()
+                for enemy in self.stage.get_enemies:
+                    if not enemy.get_is_alive_status:
+                        self.enemy_timer_update(delta_ms/1000)
+                        if self.enemy_timer.is_expired():
+                            self.stage.get_enemies.remove(enemy)
+                            self.enemy_timer.reset()
 
-            if self.stage.get_current_stage == 'stage_1':
-                if self.stage.check_stage_win() and self.stage.player.get_is_alive_status:
-                    self.stage_transition_timer_update(delta_ms/1000)
-                    if self.stage_transition_timer.is_expired():
-                        self.stage.set_current_stage = 'stage_2'
-                        print(self.stage.get_current_stage)
-                        self.timer.reset()
-                        self.stage = Stage(self.screen, 'stage_2')
-            elif self.stage.get_current_stage == 'stage_2':
-                if self.stage.check_stage_win():
-                    self.stage_transition_timer_update(delta_ms/1000)
-                    if self.stage_transition_timer.is_expired():
-                        self.stage.set_current_stage = 'stage_3'
-                        print(self.stage.get_current_stage)
-                        self.timer.reset()
-                        self.stage = Stage(self.screen, 'stage_3')
-        
+                if self.stage.get_current_stage == 'stage_1':
+                    if self.stage.player.get_player_lifes == 0:
+                        self.death_transition_timer.update(delta_ms/1000)
+                        if self.death_transition_timer.is_expired():
+                            self.show_game_over_screen()
+                            insert_values(input("Ingrese su nombre: "), self.stage.player.get_total_points)
+                    if self.stage.check_stage_win() and self.stage.player.get_is_alive_status:
+                        self.stage_transition_timer_update(delta_ms/1000)
+                        if self.stage_transition_timer.is_expired():
+                            self.stage.set_current_stage = 'stage_2'
+                            print(self.stage.get_current_stage)
+                            self.timer.reset()
+                            self.stage = Stage(self.screen, 'stage_2')
+                elif self.stage.get_current_stage == 'stage_2':
+                    if self.stage.player.get_player_lifes == 0:
+                        self.death_transition_timer.update(delta_ms/1000)
+                        if self.death_transition_timer.is_expired():
+                            self.show_game_over_screen()
+                            insert_values(input("Ingrese su nombre: "), self.stage.player.get_total_points)
+                    if self.stage.check_stage_win():
+                        self.stage_transition_timer_update(delta_ms/1000)
+                        if self.stage_transition_timer.is_expired():
+                            self.stage.set_current_stage = 'stage_3'
+                            print(self.stage.get_current_stage)
+                            self.timer.reset()
+                            self.stage = Stage(self.screen, 'stage_3')
+                elif self.stage.get_current_stage == 'stage_3':
+                    if self.stage.player.get_player_lifes == 0:
+                        self.death_transition_timer.update(delta_ms/1000)
+                        if self.death_transition_timer.is_expired():
+                            self.show_game_over_screen()
+                    if self.stage.check_stage_win():
+                        insert_values(input("Ingrese su nombre: "), self.stage.player.get_total_points)
+            else:
+                self.pause_timer.update(delta_ms/1000)
+
+                
+            
         pygame.mixer.music.stop()
         pygame.quit()
 
 
     def handle_events(self):
-        events= pygame.event.get()
+        events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
-                print("CERRANDO EL JUEGO")
                 self.running = False
+                print("CERRANDO EL JUEGO")
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    self.pause_game()
+                    
+                    
 
 
     def update_player(self, delta_ms):
@@ -69,6 +104,7 @@ class Game:
         self.timer.update(delta_ms)
         if self.timer.is_expired():
             print("Tiempo agotado, perdiste.")
+            self.show_game_over_screen()
             self.running = False
 
 
@@ -80,7 +116,24 @@ class Game:
 
 
     def pause_game(self):
-        pass
+        self.is_paused = not self.is_paused
+        if self.is_paused:
+            pygame.mixer.music.pause()
+            self.pause_timer.pause()
+        else:
+            pygame.mixer.music.unpause()
+            self.pause_timer.unpause()
+        
+        # self.pause_menu.active = self.is_paused
+        # if self.is_paused:
+        #     self.pause_menu.update(pygame.event.get())
+        #     self.pause_menu.show_dialog(self.pause_menu)
+
+    def show_game_over_screen(self):
+        self.screen.blit(self.__game_over_screen, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(3000)
+        self.running = False
 
 
     def blit(self, delta_ms, screen):

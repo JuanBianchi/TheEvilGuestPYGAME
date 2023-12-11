@@ -260,9 +260,9 @@ class Stage():
         for life in self.get_lifes:
             if pygame.sprite.collide_rect(life, self.player):
                 if self.player.get_player_lifes < self.player.get_player_max_lifes:
-                    self.__life_sound.play()
-                    self.player.set_player_lifes += life.get_extra_life
                     life.kill()
+                    self.player.set_player_lifes += life.get_extra_life
+                    self.__life_sound.play()
                 elif self.player.get_player_lifes == self.player.get_player_max_lifes:
                     pass
 

@@ -4,9 +4,6 @@ from UI.GUI_widget import *
 import unicodedata
 
 FPS = 18
-#si creo un att del self en un metodo, eso impacta sobre la clase actual, o lo crea a nivel de la jerarquia de clases? por ej self.slave
-#solo lo crea en button o en widget
-
     
 class TextBox(Widget):
     def __init__(
@@ -15,7 +12,7 @@ class TextBox(Widget):
             font_color):
         super().__init__(screen, x,y,w,h,color_background,color_border, border_size)
         
-        pygame.font.init()#llamo al constructor de la fuente porque sino a veces pincha
+        pygame.font.init()
         self._color_background_default = color_background
         self._color_border_default = color_border
         self._color_background_seleccionado = color_background_seleccionado
@@ -61,13 +58,13 @@ class TextBox(Widget):
         diferencia_horizontal = media_horizontal - media_texto_horizontal 
         diferencia_vertical = media_vertical - media_texto_vertical
         
-        self._slave.blit(image_text,(diferencia_horizontal,diferencia_vertical))#podriamos sacar cuentas para centrar el texto, por el momento 10-10
+        self._slave.blit(image_text,(diferencia_horizontal,diferencia_vertical))
         
     
     def update(self, lista_eventos):
         for evento in lista_eventos:
             if evento.type == pygame.MOUSEBUTTONDOWN:
-                if self.slave_rect_collide.collidepoint(evento.pos):#me hicieron click, esto no siempre va a funcionar
+                if self.slave_rect_collide.collidepoint(evento.pos):
                     self._color_background = self._color_background_seleccionado
                     self._color_border = self._color_border_seleccionado
                     self.is_selected = True

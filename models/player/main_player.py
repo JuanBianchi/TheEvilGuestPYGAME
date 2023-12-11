@@ -4,6 +4,7 @@ from models.bullet.bullet import Bullet
 #from models.platform.platforms import Platform
 from constantes import ANCHO_VENT, ALTO_VENT, ALTURA_MAX_SALTO, SHOT_COOLDOWN, DEBUG
 
+
 class Jugador(pg.sprite.Sprite):
     def __init__(self, coord_x, coord_y, frame_rate, speed_walk, speed_run, gravity, jump, lifes, total_lifes, max_jumps = 1) -> None:
         super().__init__()
@@ -195,18 +196,6 @@ class Jugador(pg.sprite.Sprite):
 
 
     def get_inputs(self):
-        events_list = pg.event.get()
-        for event in events_list:
-            match event.type:
-                case pg.KEYDOWN:
-                    if event.key == pg.K_SPACE: #and player.__is_running
-                        self.jump(True)
-                case pg.KEYUP:
-                    if event.key == pg.K_SPACE:
-                        self.jump(False)
-                
-
-        # Esto hacerlo en un metodo de la clase Player que asigne las teclas.
         key_pressed_list = pg.key.get_pressed()
         if key_pressed_list[pg.K_d] and not key_pressed_list[pg.K_a]:
             self.walk('Right')
@@ -228,6 +217,10 @@ class Jugador(pg.sprite.Sprite):
             self.__shot_sound.play()
             self.__is_ready = False
             self.__bullet_current_time = pg.time.get_ticks()
+        if key_pressed_list[pg.K_SPACE]:
+            self.jump(True)
+        else:
+            self.jump(False)
 
 
     def hit_check(self, stunned):
