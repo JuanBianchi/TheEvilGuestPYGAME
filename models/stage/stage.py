@@ -31,6 +31,7 @@ class Stage():
                                 self.__player_configs.get('jump'),
                                 self.__player_configs.get('lifes'),
                                 self.__player_configs.get('total_lifes'),
+                                self.__player_configs.get('shoot_cooldown'),
                                 self.__player_configs.get('max_jumps'))
         
         self.__enemy_configs = self.config.get('enemy')        

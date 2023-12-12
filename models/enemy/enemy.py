@@ -54,7 +54,7 @@ class Enemy(pygame.sprite.Sprite):
         self.__bullet_group = pygame.sprite.Group()
         self.__is_ready = True
         self.__bullet_current_time = 0
-        self.__bullet_cooldown = 1000
+        self.__bullet_cooldown = 3000
 
 
     @property

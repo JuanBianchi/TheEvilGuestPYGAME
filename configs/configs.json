@@ -37,7 +37,7 @@
             "walk_speed": 6,
             "run_speed": 12,
             "frame_rate": 10, 
-            "shoot_cooldown": 700,
+            "shoot_cooldown": 100,
             "lifes": 2,
             "total_lifes": 3,
             "coords": [
@@ -239,7 +239,7 @@
             "walk_speed": 6,
             "run_speed": 12,
             "frame_rate": 10, 
-            "shoot_cooldown": 700,
+            "shoot_cooldown": 10,
             "lifes": 2,
             "total_lifes": 3,
             "coords": [
@@ -424,7 +424,7 @@
             "walk_speed": 6,
             "run_speed": 12,
             "frame_rate": 10, 
-            "shoot_cooldown": 700,
+            "shoot_cooldown": 10,
             "lifes": 2,
             "total_lifes": 3,
             "coords": [
