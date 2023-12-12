@@ -6,7 +6,7 @@ from constantes import ANCHO_VENT, ALTO_VENT, ALTURA_MAX_SALTO, SHOT_COOLDOWN, D
 
 
 class Jugador(pg.sprite.Sprite):
-    def __init__(self, coord_x, coord_y, frame_rate, speed_walk, speed_run, gravity, jump, lifes, total_lifes, max_jumps = 1) -> None:
+    def __init__(self, coord_x, coord_y, frame_rate, speed_walk, speed_run, gravity, jump, lifes, total_lifes, shot_cooldown, max_jumps = 1) -> None:
         super().__init__()
         pg.mixer.init()
         self.__iddle_r = sfm.get_surface_from_spritesheet("./assets/img/player/iddle/leoniddle.png", 6, 1)
@@ -48,7 +48,7 @@ class Jugador(pg.sprite.Sprite):
         self.__bullet_group = pg.sprite.Group()
         self.__is_ready = True
         self.__bullet_current_time = 0
-        self.__bullet_cooldown = SHOT_COOLDOWN
+        self.__bullet_cooldown = shot_cooldown
         self.__bullet_damage = 100
         self.__shot_sound = pg.mixer.Sound("./assets/sounds/player/shot/re4 shot sound.wav")
         #Colisiones

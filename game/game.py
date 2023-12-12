@@ -19,6 +19,8 @@ class Game:
         self.font = pygame.font.Font("./assets/fonts/FontsFree-Net-Horrorfind.ttf", 36)
         self.__game_over_screen = pygame.image.load("./assets/img/background/you are dead RE4.jpg")
         self.__game_over_screen = pygame.transform.scale(self.__game_over_screen, (ANCHO_VENT, ALTO_VENT))
+        self.__game_win_screen = pygame.image.load("./assets/img/background/game win.png")
+        self.__game_win_screen = pygame.transform.scale(self.__game_win_screen, (ANCHO_VENT, ALTO_VENT))
         self.death_transition_timer = Timer(2)
         self.running = True
         self.current_stage_key = initial_stage
@@ -72,11 +74,19 @@ class Game:
                         self.death_transition_timer.update(delta_ms/1000)
                         if self.death_transition_timer.is_expired():
                             self.show_game_over_screen()
+                            insert_values(input("Ingrese su nombre: "), self.stage.player.get_total_points)
                     if self.stage.check_stage_win():
+                        self.show_game_win_screen()
                         insert_values(input("Ingrese su nombre: "), self.stage.player.get_total_points)
+                        self.running = False
+                
             else:
                 self.pause_timer.update(delta_ms/1000)
-
+                pause_font = pygame.font.Font("./assets/fonts/FontsFree-Net-Horrorfind.ttf", 72)
+                pause_text = "Pause"
+                pause_text_surface = pause_font.render(pause_text, True, (155, 0, 0))
+                self.screen.blit(pause_text_surface, (350, 250))
+                pygame.display.update()
                 
             
         pygame.mixer.music.stop()
@@ -123,17 +133,23 @@ class Game:
         else:
             pygame.mixer.music.unpause()
             self.pause_timer.unpause()
-        
-        # self.pause_menu.active = self.is_paused
-        # if self.is_paused:
-        #     self.pause_menu.update(pygame.event.get())
-        #     self.pause_menu.show_dialog(self.pause_menu)
+
 
     def show_game_over_screen(self):
         self.screen.blit(self.__game_over_screen, (0, 0))
         pygame.display.update()
         pygame.time.delay(3000)
         self.running = False
+
+    def show_game_win_screen(self):
+        self.screen.blit(self.__game_win_screen, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(3000)
+        pause_font = pygame.font.Font("./assets/fonts/FontsFree-Net-Horrorfind.ttf", 72)
+        pause_text = "YOU WIN!!"
+        pause_text_surface = pause_font.render(pause_text, True, (155, 0, 0))
+        self.screen.blit(pause_text_surface, (350, 250))
+        pygame.display.update()
 
 
     def blit(self, delta_ms, screen):
@@ -145,7 +161,7 @@ class Game:
         self.stage.spawn_lifes(delta_ms)
         if self.stage.get_current_stage == "stage_1":
             moving_platform = self.stage.get_platforms[4]
-            moving_platform.move_platform_up_down(5)
+            moving_platform.move_platform_up_down(15)
         elif self.stage.get_current_stage == "stage_2":
             moving_platform_1 = self.stage.get_platforms[4]
             moving_platform_2 = self.stage.get_platforms[3]
