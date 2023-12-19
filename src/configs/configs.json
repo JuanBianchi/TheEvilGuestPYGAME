@@ -1,0 +1,615 @@
+{
+    "stage_1": {
+        "background_img": "./src/assets/img/background/Forest.png",
+        "stage_music": "./src/assets/sounds/bg ost/RE4 OST infiltration.wav",
+        "enemy":{
+                "type": "a",
+                "walk_speed": 4,
+                "run_speed": 16,
+                "iddle_img_path": "",
+                "screech_sound": "./",
+                "walk_img_path": "./src/assets/img/enemies/zombie a/walk/WALK.png",
+                "attack_img_path": "./src/assets/img/enemies/zombie a/attack/ATTACK.png",
+                "attack_sound": "./",
+                "death_img_path": "./src/assets/img/enemies/zombie a/death/DEATH.png",
+                "death_sound": "./",
+                "walk_img_cols": 8,
+                "death_img_cols": 5,
+                "iddle_img_cols": 0,
+                "attack_img_cols": 4,
+                "rows": 1,
+                "health": 500,
+                "kill_points": 100,
+                "frame_rate": 10,
+                "gravity": 12
+        },
+        "player": {
+            "walk_img_path": "./src/assets/img/player/walk/leonwalk.png",
+            "run_img_path": "./src/assets/img/player/run/leonrun.png",
+            "jump_img_path": "./src/assets/img/player/jump/leonjump.png",
+            "iddle_img_path": "./src/assets/img/player/iddle/leoniddle.png",
+            "shoot_img_path": "./src/assets/img/player/shoot/leonshoot.png",
+            "death_img_path": "./src/assets/img/player/death/leondeath.png",
+            "death_sound": "./",
+            "jump": 35,
+            "max_jumps": 1,
+            "gravity": 12,
+            "walk_speed": 6,
+            "run_speed": 12,
+            "frame_rate": 10, 
+            "shoot_cooldown": 700,
+            "lifes": 2,
+            "total_lifes": 3,
+            "coords": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 250
+                }
+            ]
+        },
+        "bullet": {
+            "speed": 0,
+            "damage": 0,
+            "coord_x": 0,
+            "coord_y": 0,
+            "shot_sound": "./"
+        },
+        "floor":{
+            "floor_img_path": "./src/assets/img/platform/wooden_platform.png",
+            "width": 250,
+            "height": 110
+        },
+        "platform": {
+            "platform_img_path": "./src/assets/img/platform/wooden_platform.png"
+        },
+        "traps": {
+            "trap_spikes_img_path": "./src/assets/img/traps/spikes/spikes_long.png",
+            "trap_saw_img_path": "./src/assets/img/traps/saw/saw.png",
+            "width": 300,
+            "height": 80,
+            "frame_rate": 13,
+            "saw_img_cols": 4,
+            "saw_img_rows": 1
+        },
+        "coins": {
+            "name": "silver_coin",
+            "type": "coin",
+            "sub_type": "game_coins",
+            "img_rows": 1,
+            "img_columns": 8,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "points": 15
+        },
+        "lifes": {
+            "name": "green_herb",
+            "type": "lifes",
+            "sub_type": "herbs",
+            "img_columns": 1,
+            "img_rows": 1,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "value": 1
+        },
+        "stage": {
+            "max_amount_enemies": 4,
+            "coords_enemies": [
+                {
+                    "coord_x": 530,
+                    "coord_y": 103
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 103
+                },
+                {
+                    "coord_x": 530,
+                    "coord_y": 303
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 303
+                }
+            ],
+            "max_amount_floors": 2,
+            "coords_floors": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 500
+                },
+                {
+                    "coord_x": 550,
+                    "coord_y": 500                    
+                }
+            ],
+            "max_amount_platforms": 5,
+            "coords_platforms": [
+                {
+                    "coord_x": 530,
+                    "coord_y": 150
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 150
+                },
+                {
+                    "coord_x": 530,
+                    "coord_y": 350
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 350
+                },
+                {
+                    "coord_x": 340,
+                    "coord_y": 500
+                }
+            ],
+            "platform_measurements": [
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 200,
+                    "height": 20
+                },
+                {
+                    "width": 100,
+                    "height": 20
+                }
+             ],
+            "max_amount_traps": 1,
+            "trap_type": "spikes",
+            "coords_trap": [
+                {
+                    "coord_x": 250,
+                    "coord_y": 520 
+                }
+            ],
+            "max_amount_coins": 4,
+            "coords_coins": [
+                {
+                    "coord_x": 700,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 700,
+                    "coord_y": 330
+                },
+                {
+                    "coord_x": 70,
+                    "coord_y": 330
+                }
+            ],
+            "max_amount_lifes": 1,
+            "coords_lifes": [
+                {
+                    "coord_x": 400,
+                    "coord_y": 40
+                }
+            ]
+        }
+    },
+    "stage_2": {
+        "background_img": "./src/assets/img/background/Graveyard.png",
+        "stage_music": "./src/assets/sounds/bg ost/RE4 OST a stranger pasture.wav",
+        "enemy":{
+                "type": "b",
+                "walk_speed": 0,
+                "run_speed": 0,
+                "iddle_img_path": "./src/assets/img/enemies/zombie b/iddle/IDDLE 2.png",
+                "walk_img_path": "",
+                "attack_img_path": "./src/assets/img/enemies/zombie b/attack/ATTACK 2.png",
+                "death_img_path": "./src/assets/img/enemies/zombie b/death/DEATH.png",
+                "walk_img_cols": 8,
+                "death_img_cols": 5,
+                "iddle_img_cols": 5,
+                "attack_img_cols": 4,
+                "rows": 1,
+                "health": 200,
+                "kill_points": 50,
+                "frame_rate": 10,
+                "gravity": 12
+        },
+        "player": {
+            "walk_img_path": "./src/assets/img/player/walk/leonwalk.png",
+            "run_img_path": "./src/assets/img/player/run/leonrun.png",
+            "jump_img_path": "./src/assets/img/player/jump/leonjump.png",
+            "iddle_img_path": "./src/assets/img/player/iddle/leoniddle.png",
+            "shoot_img_path": "./src/assets/img/player/shoot/leonshoot.png",
+            "death_img_path": "./src/assets/img/player/death/leondeath.png",
+            "jump": 35,
+            "max_jumps": 1,
+            "gravity": 12,
+            "walk_speed": 6,
+            "run_speed": 12,
+            "frame_rate": 10, 
+            "shoot_cooldown": 700,
+            "lifes": 2,
+            "total_lifes": 3,
+            "coords": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 250
+                }
+            ]
+        },
+        "bullet": {
+            "speed": 0,
+            "damage": 0,
+            "coord_x": 0,
+            "coord_y": 0
+        },
+        "floor":{
+            "floor_img_path": "./src/assets/img/platform/wooden_platform.png",
+            "width": 250,
+            "height": 110
+        },
+        "platform": {
+            "platform_img_path": "./src/assets/img/platform/wooden_platform.png"
+        },
+        "traps": {
+            "trap_spikes_img_path": "./src/assets/img/traps/spikes/spikes_long.png",
+            "trap_saw_img_path": "./src/assets/img/traps/saw/saw.png",
+            "width": 70,
+            "height": 80,
+            "frame_rate": 13,
+            "saw_img_cols": 4,
+            "saw_img_rows": 1
+        },
+        "coins": {
+            "name": "gold_coin",
+            "type": "coin",
+            "sub_type": "game_coins",
+            "img_rows": 1,
+            "img_columns": 8,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "points": 100
+        },
+        "lifes": {
+            "name": "green_herb",
+            "type": "lifes",
+            "sub_type": "herbs",
+            "img_columns": 1,
+            "img_rows": 1,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "value": 1
+        },
+        "stage": {
+            "max_amount_enemies": 1,
+            "coords_enemies": [
+                {
+                    "coord_x": 560,
+                    "coord_y": 290
+                }
+            ],
+            "max_amount_floors": 1,
+            "coords_floors": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 500
+                }
+            ],
+            "max_amount_platforms": 5,
+            "coords_platforms": [
+                {
+                    "coord_x": 540,
+                    "coord_y": 150
+                },
+                {
+                    "coord_x": 540,
+                    "coord_y": 350
+                },
+                {
+                    "coord_x": 185,
+                    "coord_y": 350
+                },
+                {
+                    "coord_x": 340,
+                    "coord_y": 500
+                },
+                {
+                    "coord_x": 675,
+                    "coord_y": 500 
+                }
+            ],
+            "platform_measurements": [
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 60,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                }
+             ],
+            "max_amount_traps": 2,
+            "trap_type": "saw",
+            "coords_trap": [
+                {
+                    "coord_x": 250,
+                    "coord_y": 520 
+                },
+                {
+                    "coord_x": 450,
+                    "coord_y": 80 
+                }
+            ],
+            "max_amount_coins": 3,
+            "coords_coins": [
+                {
+                    "coord_x": 700,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 700,
+                    "coord_y": 300
+                },
+                {
+                    "coord_x": 700,
+                    "coord_y": 470
+                }
+            ],
+            "max_amount_lifes": 1,
+            "coords_lifes": [
+                {
+                    "coord_x": 560,
+                    "coord_y": 120
+                }
+            ]
+        }
+    },
+    "stage_3": {
+        "background_img": "./src/assets/img/background/Spooky Village.png",
+        "stage_music": "./src/assets/sounds/bg ost/RE4 OST echo in the night.wav",
+        "enemy":{
+                "type": "b",
+                "walk_speed": 0,
+                "run_speed": 0,
+                "iddle_img_path": "./src/assets/img/enemies/zombie b/iddle/IDDLE 2.png",
+                "walk_img_path": "",
+                "attack_img_path": "./src/assets/img/enemies/zombie b/attack/ATTACK 2.png",
+                "death_img_path": "./src/assets/img/enemies/zombie b/death/DEATH.png",
+                "walk_img_cols": 8,
+                "death_img_cols": 5,
+                "iddle_img_cols": 5,
+                "attack_img_cols": 4,
+                "rows": 1,
+                "health": 200,
+                "kill_points": 75,
+                "frame_rate": 10,
+                "gravity": 12
+        },
+        "player": {
+            "walk_img_path": "./src/assets/img/player/walk/leonwalk.png",
+            "run_img_path": "./src/assets/img/player/run/leonrun.png",
+            "jump_img_path": "./src/assets/img/player/jump/leonjump.png",
+            "iddle_img_path": "./src/assets/img/player/iddle/leoniddle.png",
+            "shoot_img_path": "./src/assets/img/player/shoot/leonshoot.png",
+            "death_img_path": "./src/assets/img/player/death/leondeath.png",
+            "jump": 35,
+            "max_jumps": 1,
+            "gravity": 12,
+            "walk_speed": 6,
+            "run_speed": 12,
+            "frame_rate": 10, 
+            "shoot_cooldown": 700,
+            "lifes": 2,
+            "total_lifes": 3,
+            "coords": [
+                {
+                    "coord_x": 370,
+                    "coord_y": 215
+                }
+            ]
+        },
+        "bullet": {
+            "speed": 0,
+            "damage": 0,
+            "coord_x": 0,
+            "coord_y": 0
+        },
+        "floor":{
+            "floor_img_path": "./src/assets/img/platform/wooden_platform.png",
+            "width": 250,
+            "height": 110
+        },
+        "platform": {
+            "platform_img_path": "./src/assets/img/platform/wooden_platform.png"
+        },
+        "traps": {
+            "trap_spikes_img_path": "./src/assets/img/traps/spikes/spikes_long.png",
+            "trap_saw_img_path": "./src/assets/img/traps/saw/saw.png",
+            "width": 800,
+            "height": 80,
+            "frame_rate": 13,
+            "saw_img_cols": 4,
+            "saw_img_rows": 1
+        },
+        "coins": {
+            "name": "silver_coin",
+            "type": "coin",
+            "sub_type": "game_coins",
+            "img_rows": 1,
+            "img_columns": 8,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "points": 50
+        },
+        "lifes": {
+            "name": "green_herb",
+            "type": "lifes",
+            "sub_type": "herbs",
+            "img_columns": 1,
+            "img_rows": 1,
+            "width": 30,
+            "height": 25,
+            "frame_rate": 13,
+            "value": 1
+        },
+        "stage": {
+            "max_amount_enemies": 4,
+            "coords_enemies": [
+                {
+                    "coord_x": 75,
+                    "coord_y": 70
+                },
+                {
+                    "coord_x": 675,
+                    "coord_y": 70
+                },
+                {
+                    "coord_x": 75,
+                    "coord_y": 440
+                },
+                {
+                    "coord_x": 700,
+                    "coord_y": 440
+                }
+            ],
+            "max_amount_floors": 0,
+            "coords_floors": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 0
+                }
+            ],
+            "max_amount_platforms": 9,
+            "coords_platforms": [
+                {
+                    "coord_x": 50,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 340,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 650,
+                    "coord_y": 130
+                },
+                {
+                    "coord_x": 215,
+                    "coord_y": 500
+                },
+                {
+                    "coord_x": 50,
+                    "coord_y": 500 
+                },
+                {
+                    "coord_x": 675,
+                    "coord_y": 500 
+                },
+                {
+                    "coord_x": 340,
+                    "coord_y": 500
+                },
+                {
+                    "coord_x": 550,
+                    "coord_y": 500 
+                },
+                {
+                    "coord_x": 340,
+                    "coord_y": 300 
+                }
+            ],
+            "platform_measurements": [
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 60,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                },
+                {
+                    "width": 60,
+                    "height": 20
+                },
+                {
+                    "width": 80,
+                    "height": 20
+                }
+             ],
+            "max_amount_traps": 1,
+            "trap_type": "spikes",
+            "coords_trap": [
+                {
+                    "coord_x": 0,
+                    "coord_y": 520 
+                }
+            ],
+            "max_amount_coins": 2,
+            "coords_coins": [
+                {
+                    "coord_x": 365,
+                    "coord_y": 100
+                },
+                {
+                    "coord_x": 365,
+                    "coord_y": 480
+                }
+            ],
+            "max_amount_lifes": 1,
+            "coords_lifes": [
+                {
+                    "coord_x": 700,
+                    "coord_y": 65
+                }
+            ]
+        }
+    }
+}
+

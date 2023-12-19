@@ -1,0 +1,16 @@
+ANCHO_VENT = 800
+ALTO_VENT = 600
+FPS = 13
+PLAYER_FPS = 10
+AZUL = (0, 0, 255)
+ROJO = (255, 0, 0)
+VERDE = (0, 255, 0)
+VERDE_OSCURO = (50, 170, 0)
+NEGRO = (0, 0, 0)
+BLANCO = (255, 255, 255)
+SHOT_COOLDOWN = 700
+DEBUG = True
+ALTURA_MAX_SALTO = 350
+
+JSON_CONFIG_PATH = "./src/configs/configs.json"
+IMG_PATH = "./src/assets/img"
