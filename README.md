@@ -3,6 +3,7 @@
 *** Project: Made in Pygame - Python
 *** License: MIT License
 *** Author: Juan Pablo Bianchi
+-->
 
 [![LinkedIn][linedin_img]][linkedin_link] [![Github][github_img]][github_link] 
 
