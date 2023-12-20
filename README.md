@@ -146,7 +146,7 @@ Playing any level, the controls are:
 - [ ] ADD - Level editor
 - [ ] ADD - Wider levels (beyond the screen)
 
-Moew features in progress!
+More features in progress!
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
