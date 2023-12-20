@@ -109,9 +109,9 @@ To play this game, it must be installed the following:
    ```
 3. _Move "assets" folder with "images" and "sounds" files to the directory repo:_
    ```sh
-   TheEvilGuest/src/
+   TheEvilGuestPYGAME/src/
    ```
-4. _In your CLI, change directory to `/TheEvilGuest/src` and execute_
+4. _In your CLI, change directory to `/TheEvilGuestPYGAME/src` and execute_
    ```sh
    python main.py
    ```
