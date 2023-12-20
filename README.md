@@ -18,6 +18,8 @@
 
   <p align="center">
     A project made in pygame!
+    DISCLAIMER: This is only a tribute to the Resident Evil franchise, owned by Capcom Co., Ltd.
+    I do not own any rights to the images, sounds or characters appearing in the project.
   </p>
 </div>
 
